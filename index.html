@@ -1,0 +1,1963 @@
+<!doctype html><html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style><title>Коллинеарлық және компланарлық</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+<style>
+/* Layout: school-notebook sheet on graph paper. Sticky header, pill tabs, one card per topic
+   (text left, rotatable 3D figure right), reference grid, floating pen toolbar over an ink layer. */
+:root{
+  --u:1.25; --k:1.15; --ul:1.12;
+  --paper:#f6f8fd; --grid:#dde5f4; --surface:#ffffff; --surface-2:#eef3fc;
+  --ink:#142040; --ink-2:#4b5979; --rule:#ccd6ea;
+  --accent:#2447c5; --accent-ink:#ffffff; --accent-soft:rgba(36,71,197,.12);
+  --margin:#d63e4f;
+  --plane-a:rgba(36,71,197,.17); --edge-a:#2447c5;
+  --plane-b:rgba(214,62,79,.17); --edge-b:#d63e4f;
+  --plane-c:rgba(17,122,85,.17); --edge-c:#117a55;
+  --good:#117a55; --good-soft:rgba(17,122,85,.12); --bad:#c2303f; --bad-soft:rgba(194,48,63,.11);
+  --pen-1:#1b3fd0; --pen-2:#d3263f; --pen-3:#0f8a5f;
+  --font-display:'Source Serif 4','Noto Serif',Georgia,serif;
+  --font-ui:'IBM Plex Sans','Noto Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#061a19; --grid:#0d2d2b; --surface:#0b2523; --surface-2:#10312f;
+    --ink:#e8f8f4; --ink-2:#a8d0c9; --rule:#2a5a56;
+    --accent:#4de3c2; --accent-ink:#03211d; --accent-soft:rgba(77,227,194,.17);
+    --margin:#ff9ba6;
+    --plane-a:rgba(79,216,232,.22); --edge-a:#52dcec;
+    --plane-b:rgba(255,155,166,.22); --edge-b:#ff9ba6;
+    --plane-c:rgba(166,232,107,.22); --edge-c:#a9e86d;
+    --good:#6ee7a8; --good-soft:rgba(110,231,168,.16); --bad:#ff9ba6; --bad-soft:rgba(255,155,166,.15);
+    --pen-1:#62e4f2; --pen-2:#ff9ba6; --pen-3:#b2ee78;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#061a19; --grid:#0d2d2b; --surface:#0b2523; --surface-2:#10312f;
+    --ink:#e8f8f4; --ink-2:#a8d0c9; --rule:#2a5a56;
+    --accent:#4de3c2; --accent-ink:#03211d; --accent-soft:rgba(77,227,194,.17);
+    --margin:#ff9ba6;
+    --plane-a:rgba(79,216,232,.22); --edge-a:#52dcec;
+    --plane-b:rgba(255,155,166,.22); --edge-b:#ff9ba6;
+    --plane-c:rgba(166,232,107,.22); --edge-c:#a9e86d;
+    --good:#6ee7a8; --good-soft:rgba(110,231,168,.16); --bad:#ff9ba6; --bad-soft:rgba(255,155,166,.15);
+    --pen-1:#62e4f2; --pen-2:#ff9ba6; --pen-3:#b2ee78;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink); font:400 calc(16px*var(--u))/1.5 var(--font-ui); -webkit-text-size-adjust:100%;
+}
+button,input{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{width:100%;max-width:calc(1080px*var(--u));margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{padding-block:0 110px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--rule)}
+.top-in{flex-wrap:wrap;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand svg{flex:none}
+.brand-txt{min-width:0}
+.brand-t{font:600 calc(21px*var(--ul))/1.1 var(--font-display);letter-spacing:-.01em;white-space:nowrap}
+.brand-s{font-size:calc(12.5px*var(--u));color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctrl{flex-wrap:wrap;display:flex;align-items:center;gap:8px;flex:none}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--ink-2);font:600 calc(13px*var(--u)) var(--font-ui);padding:0 11px;min-height:calc(38px*var(--k));cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.icon-btn{width:calc(38px*var(--k));height:calc(38px*var(--k));display:grid;place-items:center;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);cursor:pointer}
+.icon-btn svg,.tool svg{display:block}
+
+/* tabs */
+.tabs{display:flex;gap:8px;padding-block:14px 4px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);font:600 calc(15px*var(--u)) var(--font-ui);padding:0 16px;min-height:calc(42px*var(--k));border-radius:999px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+/* sheet */
+.sheet{position:relative}
+.stack{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding-block:12px 24px}
+.intro{margin:6px 0 0;max-width:64ch;color:var(--ink-2);font-size:calc(15.5px*var(--u))}
+.src-note{margin:0;font-size:calc(12.5px*var(--u));color:var(--ink-2)}
+.legend{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:0 14px}
+.legend summary{cursor:pointer;font-weight:600;min-height:calc(46px*var(--k));display:flex;align-items:center}
+.legend-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 18px;padding:2px 0 14px;margin:0;list-style:none}
+.legend-g li{display:flex;gap:10px;align-items:baseline;min-width:0}
+.legend-g b{font:italic 600 calc(17px*var(--u)) var(--font-display);white-space:nowrap;min-width:5.4em}
+.legend-g span{font-size:calc(14px*var(--u));color:var(--ink-2)}
+
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+@media (min-width:820px){.card{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);padding:24px;gap:30px}}
+.c-text{display:flex;flex-direction:column;gap:14px;min-width:0}
+.c-head{display:flex;align-items:center;gap:10px}
+.tag{flex:none;background:var(--accent);color:var(--accent-ink);font:700 calc(14px*var(--u)) var(--font-ui);letter-spacing:.03em;padding:4px 10px;border-radius:8px;white-space:nowrap}
+.c-head h2{margin:0;font:600 calc(22px*var(--u))/1.2 var(--font-display);text-wrap:balance}
+.stmt{margin:0;font:400 calc(19px*var(--u))/1.5 var(--font-display);max-width:58ch}
+.defs{margin:0;padding-left:1.2em;display:grid;gap:4px;font-size:calc(15px*var(--u));color:var(--ink-2);max-width:60ch}
+.sym{margin:0;background:var(--surface-2);border-radius:10px;padding:10px 12px;font:italic 400 calc(17px*var(--u))/1.5 var(--font-display);overflow-wrap:anywhere}
+.sym small{display:block;font:600 calc(11px*var(--u)) var(--font-ui);font-style:normal;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
+.real{border-top:1px dashed var(--rule);padding-top:12px}
+.real small{font:600 calc(11px*var(--u)) var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--margin)}
+.real p{margin:2px 0 0;font-size:calc(15px*var(--u));color:var(--ink-2);max-width:58ch}
+.extra{margin:0;border-top:1px dashed var(--rule);padding-top:12px;font-size:calc(15px*var(--u));max-width:60ch}
+.extra b{font-weight:600}
+.proof{border-top:1px dashed var(--rule);padding-top:4px}
+.proof summary{cursor:pointer;font-weight:600;min-height:calc(44px*var(--k));display:flex;align-items:center}
+.proof ol{margin:0;padding-left:1.3em;display:grid;gap:8px;font-size:calc(15.5px*var(--u));max-width:60ch}
+.proof li::marker{font-weight:600;color:var(--ink-2)}
+.ref{display:inline-block;font:700 calc(12px*var(--u)) var(--font-ui);background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:0 6px;margin-left:4px;white-space:nowrap}
+
+/* figure */
+.c-fig{min-width:0}
+.fig{margin:0;background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.fig svg{display:block;width:100%;height:auto;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.fig svg.grab{cursor:grabbing}
+.fig figcaption{padding:10px 14px;border-top:1px solid var(--rule);font-size:calc(14.5px*var(--u));line-height:1.45;color:var(--ink-2);min-height:5.2em}
+.counts{display:flex;gap:8px;margin-top:10px}
+.count{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;padding:6px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.count span{font-size:calc(12.5px*var(--u));color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+.count b{font:600 calc(22px*var(--u)) var(--font-display);font-variant-numeric:tabular-nums}
+.modes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mode{border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);font:600 calc(13.5px*var(--u)) var(--font-ui);border-radius:999px;padding:0 14px;min-height:calc(38px*var(--k));cursor:pointer}
+.mode[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.slider{display:flex;align-items:center;gap:12px;margin-top:10px;font-weight:600;font-size:calc(14px*var(--u))}
+.slider span{white-space:nowrap;min-width:4.2em;font-variant-numeric:tabular-nums}
+.slider input{flex:1;min-width:0;accent-color:var(--accent);min-height:calc(30px*var(--k))}
+.fig-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:calc(12.5px*var(--u));color:var(--ink-2)}
+.link-btn{border:0;background:transparent;color:var(--accent);font:600 calc(13px*var(--u)) var(--font-ui);cursor:pointer;min-height:calc(36px*var(--k));padding:0 4px}
+.pl-a{fill:var(--plane-a);stroke:var(--edge-a);stroke-width:1.5;stroke-linejoin:round}
+.pl-b{fill:var(--plane-b);stroke:var(--edge-b);stroke-width:1.5;stroke-linejoin:round}
+.pl-c{fill:var(--plane-c);stroke:var(--edge-c);stroke-width:1.5;stroke-linejoin:round}
+.pl-f{fill:var(--plane-a);stroke:none}
+.ln{fill:none;stroke-linecap:round}
+.ln-ink{stroke:var(--ink)} .ln-accent{stroke:var(--accent)} .ln-faint{stroke:var(--ink-2)}
+.pt{fill:var(--ink);stroke:var(--surface-2);stroke-width:2}
+.lbl{font:italic 600 calc(18px*var(--ul)) var(--font-display);fill:var(--ink);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--surface-2);stroke-width:3px}
+.lbl-h{fill:var(--ink-2)}
+.lbl-a{fill:var(--edge-a)} .lbl-b{fill:var(--edge-b)} .lbl-c{fill:var(--edge-c)} .lbl-ln{fill:var(--accent)}
+.lbl-pl{font-size:calc(21px*var(--ul))}
+
+/* reference */
+.ref-tools{display:grid;gap:10px}
+.search{width:100%;min-height:calc(46px*var(--k));border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(16px*var(--u)) var(--font-ui);padding:0 14px}
+.search::placeholder{color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.rgroup{display:grid;gap:10px}
+.rgroup h3{margin:6px 0 0;font:600 calc(13px*var(--u)) var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.rc{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.symbtn{border:1px solid var(--rule);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:4px 12px;min-height:calc(44px*var(--k));max-width:100%;font:italic 600 calc(24px*var(--u))/1.2 var(--font-display);cursor:pointer;text-align:left;overflow-wrap:anywhere}
+.symbtn:hover{border-color:var(--accent)}
+.rc-term{font:600 calc(20px*var(--u))/1.25 var(--font-display)}
+.rc-src{flex:none;font:700 calc(12px*var(--u)) var(--font-ui);color:var(--ink-2);background:var(--surface-2);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.rc-txt{margin:0;font-size:calc(15px*var(--u))}
+.rc-ex{margin:0;font:italic calc(15.5px*var(--u)) var(--font-display);color:var(--ink-2);overflow-wrap:anywhere}
+.rc-alt{margin:0;font-size:calc(13.5px*var(--u));color:var(--ink-2)}
+.empty{padding:28px 12px;text-align:center;color:var(--ink-2)}
+
+/* quiz */
+.quiz{max-width:720px;grid-template-columns:minmax(0,1fr)!important;gap:16px}
+.prog{display:flex;gap:4px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--rule)}
+.prog i.on{background:var(--accent)}
+.q-n{font-size:calc(13px*var(--u));color:var(--ink-2);font-weight:600}
+.q-t{margin:0;font:600 calc(21px*var(--ul))/1.35 var(--font-display);text-wrap:balance}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(16px*var(--u))/1.4 var(--font-ui);cursor:pointer;min-height:calc(50px*var(--k))}
+.opt .k{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--rule);display:grid;place-items:center;font-size:calc(12px*var(--u));font-weight:700;color:var(--ink-2)}
+.opt.ok{border-color:var(--good);background:var(--good-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.fb{margin:0;padding:12px 14px;border-radius:12px;background:var(--surface-2);font-size:calc(15px*var(--u))}
+.fb b.ok{color:var(--good)} .fb b.bad{color:var(--bad)}
+.btn{align-self:flex-start;border:0;background:var(--accent);color:var(--accent-ink);font:600 calc(15px*var(--u)) var(--font-ui);padding:0 20px;min-height:calc(46px*var(--k));border-radius:12px;cursor:pointer}
+.score{font:600 calc(40px*var(--u))/1 var(--font-display)}
+
+/* pen */
+#ink{position:absolute;left:0;top:0;z-index:5;pointer-events:none}
+body[data-tool="pen"] #ink,body[data-tool="line"] #ink,body[data-tool="eraser"] #ink{pointer-events:auto;touch-action:none;cursor:crosshair}
+body[data-tool="eraser"] #ink{cursor:cell}
+.pen{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.pen-bar{pointer-events:auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px;padding:6px;background:var(--surface);border:1px solid var(--rule);border-radius:16px;box-shadow:0 8px 28px rgba(8,16,40,.22)}
+.tool{width:calc(38px*var(--k));height:calc(38px*var(--k));display:grid;place-items:center;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--ink);cursor:pointer;padding:0}
+.tool[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tool.armed{background:var(--bad);color:#fff}
+.tool .dot{display:block;border-radius:50%;background:currentColor}
+.tool.sw .dot{width:20px;height:20px}
+.tool.sw[aria-pressed="true"]{background:transparent;border-color:var(--ink)}
+.sep{width:1px;height:24px;background:var(--rule);margin:0 3px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:45;max-width:min(92vw,420px);background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;font-size:calc(14px*var(--u));line-height:1.35;text-align:center;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.ang-f{fill:var(--plane-b);stroke:none}
+.ang-s{fill:none;stroke:var(--edge-b);stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
+.ln-b{stroke:var(--edge-b)} .ln-c{stroke:var(--edge-c)}
+.lbl-ang{font-size:calc(17px*var(--ul))}
+.brand-t{white-space:normal}
+.legend-g{grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr))}
+.legend-g b{min-width:0;white-space:normal;flex:none;max-width:45%}
+.tab{max-width:calc(100vw - 32px);white-space:normal;line-height:1.25;padding-block:6px}
+.brand-t,.brand-s,.c-head h2,.c-text,.stmt,.defs li,.sym{min-width:0;overflow-wrap:break-word;hyphens:auto}
+
+.ln-a{stroke:var(--edge-a)}
+.sol-f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;min-width:0}
+.sol-f>label,.sol-o legend{font-weight:700;font-size:calc(calc(14px*var(--u))*var(--u));color:var(--ink-2)}
+.sol select,.sol input[type=number]{width:100%;min-width:0;min-height:calc(44px*var(--k));border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(calc(16px*var(--u))*var(--u)) var(--font-ui);padding:0 12px}
+.sol select:focus-visible,.sol input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sol input[aria-invalid="true"]{border-color:var(--edge-b)}
+.sol-par{display:flex;flex-wrap:wrap;gap:10px}
+.sol-n span{white-space:nowrap}.sol select{font-size:calc(calc(14.5px*var(--u))*var(--u))}
+.sol-n{display:flex;align-items:center;gap:8px;flex:1 1 130px;min-width:0;font-weight:700;font-size:calc(calc(15px*var(--u))*var(--u))}
+.sol-hint{color:var(--ink-2);font-size:calc(calc(13px*var(--u))*var(--u));overflow-wrap:anywhere}
+.sol-objs{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.sol-o{flex:1 1 200px;min-width:0;border:1px solid var(--rule);border-radius:12px;padding:8px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.sol-v{display:flex;flex-direction:column;gap:4px;font-size:calc(calc(13px*var(--u))*var(--u));color:var(--ink-2)}
+.sol-ans{display:flex;flex-direction:column;gap:8px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin:6px 0 12px}
+.sol-ans small{font-weight:700;color:var(--accent);font-size:calc(calc(13px*var(--u))*var(--u))}
+.sol-res{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sol-res .k{color:var(--ink-2);font-size:calc(calc(14px*var(--u))*var(--u))}
+.sol-res b{font-size:calc(calc(18px*var(--u))*var(--u));overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.sol-res.main b{font-size:calc(calc(24px*var(--u))*var(--u))}
+.sol .proof li{overflow-wrap:anywhere}
+.card.sol{grid-template-columns:minmax(0,1fr)}@media(min-width:820px){.card.sol{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:'ctl fig' 'zone fig';align-items:start}.card.sol>.c-text{grid-area:ctl}.card.sol>.c-fig{grid-area:fig;position:sticky;top:90px}.card.sol>.sol-zone{grid-area:zone}}@media(min-width:1180px){.card.sol{grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:'ctl fig zone';gap:22px}.sol-zone{position:sticky;top:96px}}.sol-zone{min-width:0;display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 130px);overflow:auto;overscroll-behavior:contain}.sol-zone .work{margin-top:0;min-height:calc(420px*var(--k));flex:1 0 auto}.work{margin-top:16px;min-height:calc(220px*var(--k));border:2px dashed var(--rule);border-radius:14px;padding:8px 12px}.work small{color:var(--ink-2);font-weight:600}
+.sol-o{flex-direction:row;flex-wrap:wrap}.sol-o legend{flex:none}.sol-v{flex:1 1 90px;min-width:0}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.mt-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.mt-c{position:relative;display:flex;align-items:center;gap:8px;min-width:0;text-align:left;min-height:calc(56px*var(--k));padding:8px 10px;border:1.5px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(15px*var(--u)) var(--font-ui);cursor:pointer}
+.mt-c:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mt-c.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent)}
+.mt-c.got{border-color:var(--accent)}
+.mt-c.ok{border-color:var(--edge-c);background:var(--plane-c)}.mt-c.bad{border-color:var(--edge-b);background:var(--plane-b)}
+.mt-n{flex:none;display:grid;place-items:center;width:1.8em;height:1.8em;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800}
+.mt-t{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.mt-b{flex:none;min-width:1.4em;text-align:center;font-weight:800;color:var(--accent)}
+.mt-m{flex:none;font-style:normal;font-weight:800}
+.m-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}
+.card.match{display:block}
+.m-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.m-head h2{margin:0;font-size:calc(22px*var(--u))}
+.m-cnt{flex:none;padding:4px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:calc(15px*var(--u))}
+.m-help{margin:8px 0 0;color:var(--ink-2);font-size:calc(15px*var(--u))}.card.match .mt{margin-top:14px}
+.m-task{margin-top:14px;border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:12px;padding:10px 14px;background:var(--surface)}
+.m-task small{color:var(--accent);font-weight:700}.m-task p{margin:4px 0 0;font-size:calc(17px*var(--u));overflow-wrap:anywhere}
+.intro{max-width:none}
+
+.mt-c.img{min-height:calc(130px*var(--k))}
+.mt-img{flex:1 1 auto;min-width:0;display:block}
+.mt-img svg{display:block;width:100%;max-height:calc(150px*var(--k));height:auto}
+.mt-img .lbl{font-size:22px}
+.mt-img .ln{stroke-width:2.2px}.mt-img .ln-accent{stroke-width:3.4px}
+.mt-img .pt{r:3.5px;stroke-width:1.5px}
+.mt-img .ang-s{stroke-width:2.5px}
+.mt-img .pl-a,.mt-img .pl-b,.mt-img .pl-c{stroke-width:4px}
+.mt-img .ln[stroke-dasharray]{stroke-dasharray:6 6;stroke-width:1.6px}
+
+.mt-c.img{flex-wrap:wrap;align-items:flex-start;row-gap:2px}
+.mt-c.img .mt-n,.mt-c.img .mt-b,.mt-c.img .mt-m{order:1}
+.mt-c.img .mt-n{margin-right:auto}
+.mt-c.img .mt-t{order:3;flex:0 0 100%}
+.mt-c.img{min-height:0}
+.mt-img svg{max-height:calc(190px*var(--k))}
+
+.mt.has-img{grid-template-columns:minmax(0,1fr)}.m-head{flex-wrap:wrap}.m-head h2{min-width:0;overflow-wrap:anywhere}
+.mt.has-img .mt-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(150px*var(--k)),1fr));gap:10px}
+.mt.has-img .mt-col:first-child .mt-c{align-content:start}
+.mt.has-img .mt-col:last-child .mt-c{min-height:calc(56px*var(--k))}
+@media(max-width:560px){.mt.has-img .mt-col{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ah{stroke:none}.ah-ink{fill:var(--ink)}.ah-accent{fill:var(--accent)}.ah-faint{fill:var(--ink-2)}.ah-a{fill:var(--edge-a)}.ah-b{fill:var(--edge-b)}.ah-c{fill:var(--edge-c)}
+/* ===== polish: teal-green dark palette, larger text, clearer buttons, smooth effects ===== */
+body{line-height:1.6;font-size:calc(17px*var(--u))}
+.stmt{font-size:calc(18px*var(--u))}
+.tab,.mode,.btn,.seg button,.link-btn,.tool,.mt-c,.opt,.icon-btn,.sol-in,select{transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease,transform .18s ease,filter .2s ease}
+.tab{border-width:1.5px;font-weight:700;min-height:calc(46px*var(--k))}
+.tab:hover,.mode:hover,.mt-c:hover,.opt:not([disabled]):hover{border-color:var(--accent);color:var(--ink);transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.mode{border-width:1.5px;min-height:calc(42px*var(--k))}
+.mode[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--accent)}
+.btn{font-weight:700;min-height:calc(52px*var(--k));padding:0 26px;box-shadow:0 2px 0 rgba(0,0,0,.2),0 8px 20px rgba(0,0,0,.14)}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn:active,.tab:active,.mode:active,.mt-c:active{transform:translateY(1px);filter:none;box-shadow:none}
+.btn.ghost{box-shadow:none;border-width:2px}
+.btn.ghost:hover{border-color:var(--accent);background:var(--accent-soft)}
+.link-btn{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.seg button{min-height:calc(42px*var(--k))}
+.seg button:hover:not([aria-pressed="true"]){background:var(--accent-soft);color:var(--ink)}
+.card{transition:box-shadow .28s ease,border-color .28s ease}
+.card:hover{box-shadow:0 12px 34px rgba(0,0,0,.16);border-color:var(--accent)}
+.sol-in:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+:root[data-theme="dark"] .top{background:linear-gradient(180deg,#0a2b29,var(--paper))}
+.mt.has-img .mt-c:not(.img) .mt-t{overflow-wrap:break-word;word-break:normal;hyphens:auto;font-size:.92em}</style>
+
+<div class="app">
+  <header class="top">
+    <div class="wrap top-in">
+      <div class="brand">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M3 25l9-12h21l-9 12z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M18 3v31" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="18" cy="19" r="2.6" fill="var(--ink)"/>
+        </svg>
+        <div class="brand-txt"><div class="brand-t" id="bt"></div><div class="brand-s" id="bs"></div></div>
+      </div>
+      <div class="ctrl">
+        <div class="seg" role="group" aria-label="Язык / Тіл">
+          <button type="button" data-lang="ru" aria-pressed="true">РУС</button>
+          <button type="button" data-lang="kk" aria-pressed="false">ҚАЗ</button>
+        </div>
+        <div class="seg" id="sizeSeg" role="group"><button type="button" data-size="0">А</button><button type="button" data-size="1">А+</button><button type="button" data-size="2">А++</button></div>
+        <button type="button" class="icon-btn" id="themeBtn" data-act="theme"></button>
+      </div>
+    </div>
+  </header>
+  <div class="wrap"><nav class="tabs" id="tabs" role="tablist"></nav></div>
+  <div class="wrap">
+    <main class="sheet" id="sheet">
+      <div id="view"></div>
+      <canvas id="ink" aria-hidden="true"></canvas>
+    </main>
+  </div>
+</div>
+<div class="pen" id="penWrap"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var LS={
+  get:function(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+var D=Math.PI/180, SUB='₁';
+
+/* ---------- UI strings ---------- */
+var T={
+ru:{sizeGroup:'Размер текста',sizeNames:['Обычный текст','Крупный текст','Очень крупный текст'],title:'Коллинеарность и компланарность векторов',sub:'Тема 11.3 · коллинеарные и компланарные векторы, разложение вектора, решатель',
+ tabs:{col:'Коллинеарность',cop:'Компланарность',dec:'Разложение вектора',sol:'Задачи',ref:'Справочник',qz:'Тест'},
+ intro:{
+  col:'Тема 11.3. Ненулевые векторы называются коллинеарными, если они лежат на одной прямой или на параллельных прямых. Вектор b коллинеарен ненулевому вектору a тогда и только тогда, когда b = λ·a. Двигайте ползунок и следите за подписью под чертежом.',
+  cop:'Тема 11.3. Векторы называются компланарными, если при откладывании от одной точки они лежат в одной плоскости. Три вектора, один из которых раскладывается по двум другим, компланарны. Двигайте ползунок: вектор выходит из плоскости или возвращается в неё.',
+  dec:'Тема 11.3. Если три вектора некомпланарны, то любой вектор пространства единственным образом раскладывается по ним: d = x·a + y·b + z·c. Сумма трёх некомпланарных векторов, отложенных от одной точки, равна диагонали параллелепипеда.',
+  sol:'Решатель: выберите задачу и введите числа. Решатель проверит коллинеарность векторов, найдёт неизвестную координату, проверит, лежат ли три точки на одной прямой, параллельны ли прямые, компланарны ли векторы и лежат ли четыре точки в одной плоскости, разложит вектор по трём некомпланарным векторам, покажет решение по шагам и построит чертёж. Или выберите «Задания на соответствие» и соедините пары карточек.',
+  ref:'Обозначения, формулы и термины темы 11.3. Нажмите на знак, чтобы скопировать его в записи.'},
+ notation:'Обозначения',real:'В жизни',proof:'Доказательство',sym:'Запись',more:'Ещё',
+ hint:'Потяните фигуру, чтобы повернуть',reset:'Сбросить вид',
+ qOf:'Вопрос',of:'из',next:'Дальше',finish:'Завершить',result:'Результат',again:'Пройти ещё раз',ok:'Верно.',bad:'Неверно.',
+ r5:'Отлично, тема усвоена.',r3:'Хорошо. Повторите карточки, где были ошибки.',r0:'Вернитесь к карточкам и попробуйте ещё раз.',
+ pen:'Ручка',eraser:'Ластик',c1:'Синяя ручка',c2:'Красная ручка',c3:'Зелёная ручка',size:'Толщина линии',undo:'Отменить последний штрих',
+ clear:'Стереть все записи',clearArmed:'Нажмите ещё раз, чтобы стереть всё',
+ penOn:'Ручка включена: пишите прямо на странице. Чтобы листать, нажмите на ручку ещё раз.',
+ eraserOn:'Ластик: проведите по записи.',cleared:'Записи стёрты',
+ toLight:'Включить светлую тему',toDark:'Включить тёмную тему',penGroup:'Ручка для записей',
+ search:'Найти знак, формулу или термин',all:'Все',empty:'Ничего не найдено',copied:'Скопировано',copyFail:'Не удалось скопировать',
+ cntNames:['вершины','рёбра','грани'],cntLetters:['В','Р','Г'],srcNote:'По учебнику В. А. Смирнова, Е. А. Туякова «Геометрия 10», Мектеп, 2019: тема 11.3.'},
+kk:{sizeGroup:'Мәтін өлшемі',sizeNames:['Қалыпты мәтін','Ірі мәтін','Өте ірі мәтін'],title:'Векторлардың коллинеарлығы және компланарлығы',sub:'11.3 тақырып · коллинеар және компланар векторлар, векторды жіктеу, шешуші',
+ tabs:{col:'Коллинеарлық',cop:'Компланарлық',dec:'Векторды жіктеу',sol:'Есептер',ref:'Анықтама',qz:'Тест'},
+ intro:{
+  col:'11.3 тақырып. Бір түзуде немесе параллель түзулерде жатқан нөлдік емес векторлар коллинеар деп аталады. b векторы нөлдік емес a векторына коллинеар болуы үшін b = λ·a болуы қажет және жеткілікті. Жүгірткіні жылжытып, сызбаның астындағы жазуды қараңыз.',
+  cop:'11.3 тақырып. Бір нүктеден салғанда бір жазықтықта жататын векторлар компланар деп аталады. Үш вектордың біреуі қалған екеуі арқылы жіктелсе, олар компланар. Жүгірткіні жылжытыңыз: вектор жазықтықтан шығады немесе оған қайта оралады.',
+  dec:'11.3 тақырып. Егер үш вектор компланар болмаса, кеңістіктің кез келген векторы олар арқылы жалғыз тәсілмен жіктеледі: d = x·a + y·b + z·c. Бір нүктеден салынған үш компланар емес вектордың қосындысы параллелепипедтің диагоналіне тең.',
+  sol:'Шешуші: есепті таңдап, сандарды енгізіңіз. Шешуші векторлардың коллинеарлығын тексереді, белгісіз координатаны табады, үш нүктенің бір түзуде жатуын, түзулердің параллельдігін, векторлардың компланарлығын және төрт нүктенің бір жазықтықта жатуын тексереді, векторды үш компланар емес вектор арқылы жіктейді, шешуін қадам-қадаммен көрсетіп, сызба салады. Немесе «Сәйкестендіру тапсырмалары» бөлімінде карточка жұптарын қосыңыз.',
+  ref:'11.3 тақырыптың белгілері, формулалары және терминдері. Жазбаға көшіру үшін белгіні басыңыз.'},
+ notation:'Белгілеулер',real:'Өмірде',proof:'Дәлелдеу',sym:'Жазылуы',more:'Тағы',
+ hint:'Бұру үшін фигураны сүйреңіз',reset:'Көріністі қалпына келтіру',
+ qOf:'Сұрақ',of:'/',next:'Келесі',finish:'Аяқтау',result:'Нәтиже',again:'Қайта өту',ok:'Дұрыс.',bad:'Бұрыс.',
+ r5:'Тамаша, тақырып меңгерілді.',r3:'Жақсы. Қателескен карточкаларды қайталаңыз.',r0:'Карточкаларға оралып, қайта байқап көріңіз.',
+ pen:'Қалам',eraser:'Өшіргіш',c1:'Көк қалам',c2:'Қызыл қалам',c3:'Жасыл қалам',size:'Сызық қалыңдығы',undo:'Соңғы сызықты болдырмау',
+ clear:'Барлық жазбаны өшіру',clearArmed:'Бәрін өшіру үшін қайта басыңыз',
+ penOn:'Қалам қосулы: бетке тікелей жазыңыз. Жылжыту үшін қаламды қайта басыңыз.',
+ eraserOn:'Өшіргіш: жазудың үстінен жүргізіңіз.',cleared:'Жазбалар өшірілді',
+ toLight:'Жарық тақырыпты қосу',toDark:'Қараңғы тақырыпты қосу',penGroup:'Жазба қаламы',
+ search:'Белгіні, формуланы немесе терминді іздеу',all:'Барлығы',empty:'Ештеңе табылмады',copied:'Көшірілді',copyFail:'Көшіру мүмкін болмады',
+ cntNames:['төбелер','қырлар','жақтар'],cntLetters:['Т','К','Ж'],srcNote:'В. А. Смирнов, Е. А. Тұяқов «Геометрия 10» оқулығы бойынша, Мектеп, 2019: 11.3 тақырып.'}
+};
+
+var LEGEND=[
+ ['a ∥ b',{ru:'векторы a и b коллинеарны',kk:'a және b векторлары коллинеар'}],
+ ['b = λ·a',{ru:'вектор b получен умножением a на число λ',kk:'b векторы a векторын λ санына көбейтуден шықты'}],
+ ['a ↑↑ b',{ru:'векторы сонаправлены (λ > 0)',kk:'векторлар бағыттас (λ > 0)'}],
+ ['a ↑↓ b',{ru:'векторы противоположно направлены (λ < 0)',kk:'векторлар қарама-қарсы бағытталған (λ < 0)'}],
+ ['c = x·a + y·b',{ru:'разложение вектора c по векторам a и b',kk:'c векторын a және b векторлары бойынша жіктеу'}],
+ ['d = x·a + y·b + z·c',{ru:'разложение вектора d по трём векторам',kk:'d векторын үш вектор бойынша жіктеу'}]
+];
+T.ru.lineTool='Прямая линия';T.ru.lineOn='Прямая линия: проведите от начала до конца. Почти горизонтальная или вертикальная линия выровняется сама.';
+T.kk.lineTool='Түзу сызық';T.kk.lineOn='Түзу сызық: басынан соңына дейін жүргізіңіз. Көлденең немесе тік шамалас сызық өздігінен түзеледі.';
+
+/* ---------- 3D helpers ---------- */
+/* ---------- 3D helpers ---------- */
+function planeAround(th,hx,hs){var s=Math.sin(th),c=Math.cos(th);return [[-hx,-hs*s,-hs*c],[hx,-hs*s,-hs*c],[hx,hs*s,hs*c],[-hx,hs*s,hs*c]];}
+function yShift(pts,dy){return pts.map(function(p){return [p[0],p[1]+dy,p[2]];});}
+function lerp(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
+function pl(pts,col,lab,li){return {k:'plane',pts:pts,col:col,lab:lab,li:li};}
+function ln(a,b,o){var r={k:'line',a:a,b:b,c:'ink',w:2,le:'b',lo:[8,-10]};for(var k in o)r[k]=o[k];return r;}
+function pt(p,lab,o){var r={k:'pt',p:p,lab:lab,o:[9,-9]};for(var k in o)r[k]=o[k];return r;}
+var PH=planeAround(0,1.25,.95);
+var LET='ABCDEFGH';
+
+/* polyhedra */
+function ngon(n,r,y,rot){var a=[],k,t;for(k=0;k<n;k++){t=rot+2*Math.PI*k/n;a.push([r*Math.cos(t),y,r*Math.sin(t)]);}return a;}
+function poly(V,F,names){return {k:'poly',V:V,F:F,names:names};}
+function boxPoly(hx,hy,hz,sx,sz){
+ var b=[[-hx,-hy,hz],[hx,-hy,hz],[hx,-hy,-hz],[-hx,-hy,-hz]],
+     t=b.map(function(q){return [q[0]+sx,hy,q[2]+sz];});
+ return poly(b.concat(t),[[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]],
+  ['A','B','C','D','A'+SUB,'B'+SUB,'C'+SUB,'D'+SUB]);
+}
+function tetraPoly(){
+ return poly([[-.75,-.6,.43],[.75,-.6,.43],[0,-.6,-.87],[0,.62,0]],[[0,1,2],[0,1,3],[1,2,3],[2,0,3]],['A','B','C','D']);
+}
+function prismPoly(n,obl){
+ var rot=Math.PI*.75,b=ngon(n,.85,-.65,rot),t=ngon(n,.85,.65,rot).map(function(q){return obl?[q[0]+.5,q[1],q[2]-.25]:q;}),
+     F=[[],[]],names=[],i,j;
+ for(i=0;i<n;i++){F[0].push(i);F[1].push(n+i);names.push(LET[i]);}
+ for(i=0;i<n;i++)names.push(LET[i]+SUB);
+ for(i=0;i<n;i++){j=(i+1)%n;F.push([i,j,n+j,n+i]);}
+ return poly(b.concat(t),F,names);
+}
+function pyramidPoly(n){
+ var b=ngon(n,.95,-.6,Math.PI*.75),F=[[]],names=[],i,j;
+ for(i=0;i<n;i++){F[0].push(i);names.push(LET[i]);}
+ for(i=0;i<n;i++){j=(i+1)%n;F.push([i,j,n]);}
+ names.push('S');
+ return poly(b.concat([[0,.85,0]]),F,names);
+}
+function polyCounts(p){
+ var seen={},e=0;
+ p.F.forEach(function(f){for(var i=0;i<f.length;i++){var a=f[i],b=f[(i+1)%f.length],k=a<b?a+'-'+b:b+'-'+a;if(!seen[k]){seen[k]=1;e++;}}});
+ return [p.V.length,e,p.F.length];
+}
+
+/* ---------- content ---------- */
+var ITEMS={};
+var LIST={col:['k1','k2','k3'],cop:['p1','p2','p3'],dec:['r1','r2','r3']};
+/* ---------- vector helpers and angle marks ---------- */
+function vadd(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
+function vsub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+function vmul(a,k){return [a[0]*k,a[1]*k,a[2]*k];}
+function vdot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+function vcross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+function vlen(a){return Math.sqrt(vdot(a,a));}
+function vunit(a){var l=vlen(a)||1;return vmul(a,1/l);}
+function angDeg(a,b){var c=vdot(a,b)/(vlen(a)*vlen(b));return Math.acos(Math.max(-1,Math.min(1,c)))/D;}
+function fmtN(x,d){return String(+x.toFixed(d)).replace('.',',');}
+function ang(o,u,w,opt){var r={k:'ang',o:o,u:vunit(u),w:vunit(w),r:.3,sq:false,lab:'',col:'b'};for(var k in opt)r[k]=opt[k];return r;}
+function rightAt(o,u,w,r){return ang(o,u,w,{sq:true,r:r||.16});}
+function dashed(a,b,c){return ln(a,b,{c:c||'faint',d:1,w:1.6});}
+var BIG=planeAround(0,1.5,1.15);
+
+function cubeP(){return boxPoly(.56,.56,.56,0,0);}
+function nmv(P,pair){return P.names[pair[0]]+P.names[pair[1]];}
+function idxOf(P,q){var i;for(i=0;i<P.V.length;i++)if(vlen(vsub(P.V[i],q))<1e-6)return i;return -1;}
+function rayDir(psi){return [Math.cos(psi*D),0,Math.sin(psi*D)];}
+var KS=.95/3;
+function dec1(n){return fmtN(n/10,1);}
+function perpTo(v,e){return vsub(v,vmul(e,vdot(v,e)));}
+function centroid(P,idx){var c=[0,0,0];idx.forEach(function(i){c=vadd(c,P.V[i]);});return vmul(c,1/idx.length);}
+
+/* ================= helpers for coordinate scenes (display x,y,z -> render x,z,y) ================= */
+function A3(p,s){return [p[0]*s,p[2]*s,p[1]*s];}
+function axes3(Lp,Ln,o){
+ o=o||{};
+ var r=[
+  ln([-Ln,0,0],[0,0,0],{c:'faint',d:1,w:1.4}),
+  ln([0,0,-Ln],[0,0,0],{c:'faint',d:1,w:1.4}),
+  ln([0,-Ln,0],[0,0,0],{c:'faint',d:1,w:1.4}),
+  ln([0,0,0],[Lp,0,0],{c:'ink',w:2,arrow:1,lab:'x',le:'b',lo:[13,-3]}),
+  ln([0,0,0],[0,0,Lp],{c:'ink',w:2,arrow:1,lab:'y',le:'b',lo:[-12,9]}),
+  ln([0,0,0],[0,Lp,0],{c:'ink',w:2,arrow:1,lab:'z',le:'b',lo:[11,-6]}),
+  pt([0,0,0],'O',{o:[-13,12]})
+ ];
+ if(o.noO)r.pop();
+ return r;
+}
+function Pn(p,s,lab,o){return pt(A3(p,s),lab,{o:o||[11,-10]});}
+function Sg(p,q,s,c,w,d){return ln(A3(p,s),A3(q,s),{c:c||'accent',w:w||2.4,d:d?1:0});}
+function Ar(p,q,s,c,lab,lo,w){var o={c:c||'accent',w:w||2.6,arrow:1};if(lab){o.lab=lab;o.le='m';o.lt=.5;o.lo=lo||[10,-10];}return ln(A3(p,s),A3(q,s),o);}
+function dropBox(p,s){
+ var x=p[0],y=p[1],z=p[2],o=[];
+ function d(a,b){o.push(dashed(A3(a,s),A3(b,s),'faint'));}
+ d([x,y,z],[x,y,0]);d([x,y,z],[x,0,z]);d([x,y,z],[0,y,z]);
+ d([x,y,0],[x,0,0]);d([x,y,0],[0,y,0]);d([x,0,z],[x,0,0]);d([x,0,z],[0,0,z]);d([0,y,z],[0,y,0]);d([0,y,z],[0,0,z]);
+ return o;
+}
+function coordPlanes(h,lb){
+ return [pl([[-h,0,-h],[h,0,-h],[h,0,h],[-h,0,h]],'a',lb?'Oxy':'',2),
+         pl([[-h,-h,0],[h,-h,0],[h,h,0],[-h,h,0]],'b',lb?'Oxz':'',3),
+         pl([[0,-h,-h],[0,-h,h],[0,h,h],[0,h,-h]],'c',lb?'Oyz':'',1)];
+}
+function vtxt(a){return '('+a.map(function(x){return fmtN(x,2);}).join('; ')+')';}
+function cubeVerts(a){
+ return {D:[0,0,0],C:[a,0,0],A:[0,a,0],B:[a,a,0],D1:[0,0,a],C1:[a,0,a],A1:[0,a,a],B1:[a,a,a]};
+}
+var CUBE_NAMES=['A','B','C','D','A'+SUB,'B'+SUB,'C'+SUB,'D'+SUB],CUBE_KEYS=['A','B','C','D','A1','B1','C1','D1'];
+function boxPolyD(p,q,r,s){
+ var V=CUBE_KEYS.map(function(k){
+  var X={A:[0,q,0],B:[p,q,0],C:[p,0,0],D:[0,0,0],A1:[0,q,r],B1:[p,q,r],C1:[p,0,r],D1:[0,0,r]}[k];
+  return A3(X,s);
+ });
+ return poly(V,[[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]],CUBE_NAMES);
+}
+
+/* ================= helpers for 11.3 ================= */
+function two(L,ru,kk){return L==='ru'?ru:kk;}
+function fr(x){
+ if(Math.abs(x)<1e-12)return '0';
+ var d,m,sg=x<0?'−':'',ax=Math.abs(x);
+ for(d=1;d<=24;d++){m=ax*d;if(Math.abs(m-Math.round(m))<1e-9)return sg+(d===1?String(Math.round(m)):Math.round(m)+'/'+d);}
+ return fmtN(x,3);
+}
+function det3(a,b,c){return vdot(a,vcross(b,c));}
+function vtx(a){return '('+a.map(function(x){return fmtN(x,2);}).join('; ')+')';}
+function lin(p,q,s,c,w,d){return ln(A3(p,s),A3(q,s),{c:c||'accent',w:w||2.4,d:d?1:0});}
+function planeQ(P,u,w,k,s,col,lab){
+ /* parallelogram P + (±k)u + (±k)w in display coords */
+ var q=[[-k,-k],[k,-k],[k,k],[-k,k]].map(function(t){return A3(vadd(P,vadd(vmul(u,t[0]),vmul(w,t[1]))),s);});
+ return pl(q,col||'a',lab||'',2);
+}
+function parBox(O,a,b,c,s,col){
+ var V=[],i,j,k,o=[],P,idx=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+ for(i=0;i<2;i++)for(j=0;j<2;j++)for(k=0;k<2;k++)V.push(vadd(O,vadd(vmul(a,i),vadd(vmul(b,j),vmul(c,k)))));
+ idx.forEach(function(e){o.push(dashed(A3(V[e[0]],s),A3(V[e[1]],s),col||'faint'));});
+ return o;
+}
+
+/* ================= tab col ================= */
+ITEMS.k1={tag:'11.3',
+ title:{ru:'Коллинеарные векторы',kk:'Коллинеар векторлар'},
+ stmt:{ru:'Ненулевые векторы называются коллинеарными, если они лежат на одной прямой или на параллельных прямых. Вектор b коллинеарен ненулевому вектору a тогда и только тогда, когда существует число λ, при котором b = λ·a.',
+       kk:'Бір түзуде немесе параллель түзулерде жатқан нөлдік емес векторлар коллинеар деп аталады. b векторы нөлдік емес a векторына коллинеар болуы үшін b = λ·a теңдігін қанағаттандыратын λ саны табылуы қажет және жеткілікті.'},
+ defs:{ru:['При λ > 0 векторы a и b сонаправлены (a ↑↑ b), при λ < 0 — противоположно направлены (a ↑↓ b).','Длины связаны равенством |b| = |λ|·|a|.','Нулевой вектор считается коллинеарным любому вектору.'],
+       kk:['λ > 0 болса, a және b векторлары бағыттас (a ↑↑ b), λ < 0 болса — қарама-қарсы бағытталған (a ↑↓ b).','Ұзындықтары |b| = |λ|·|a| теңдігімен байланысқан.','Нөлдік вектор кез келген векторға коллинеар деп есептеледі.']},
+ sym:{ru:'a ∥ b  ⇔  b = λ·a  (a ≠ 0)',kk:'a ∥ b  ⇔  b = λ·a  (a ≠ 0)'},
+ extra:{ru:'Пример: a(1; 2; 2), b(−2; −4; −4). Здесь b = −2·a, значит, векторы коллинеарны и направлены противоположно.',kk:'Мысал: a(1; 2; 2), b(−2; −4; −4). Мұнда b = −2·a, демек векторлар коллинеар және қарама-қарсы бағытталған.'},
+ real:{ru:'Два поезда идут по параллельным путям: их скорости — коллинеарные векторы. Если поезда идут навстречу, векторы скоростей направлены противоположно.',kk:'Екі пойыз параллель жолдармен жүреді: олардың жылдамдықтары — коллинеар векторлар. Пойыздар бір-біріне қарсы жүрсе, жылдамдық векторлары қарама-қарсы бағытталады.'},
+ proof:[
+  {ru:'Пусть b = λ·a и a ≠ 0. По определению произведения вектора на число вектор λ·a лежит на той же прямой, что и a, или на параллельной ей прямой. Значит, a ∥ b.',kk:'b = λ·a және a ≠ 0 болсын. Вектордың санға көбейтіндісінің анықтамасы бойынша λ·a векторы a векторымен бір түзуде немесе оған параллель түзуде жатады. Демек, a ∥ b.'},
+  {ru:'Обратно, пусть a ∥ b и a ≠ 0. Положим λ = |b| / |a|, если векторы сонаправлены, и λ = −|b| / |a|, если противоположно направлены.',kk:'Керісінше, a ∥ b және a ≠ 0 болсын. Векторлар бағыттас болса λ = |b| / |a|, қарама-қарсы бағытталған болса λ = −|b| / |a| деп аламыз.'},
+  {ru:'Тогда векторы λ·a и b имеют одинаковую длину и направление, то есть b = λ·a.',kk:'Сонда λ·a және b векторларының ұзындығы да, бағыты да бірдей, яғни b = λ·a.'}],
+ def:'o',v0:{yaw:-.35,pitch:.35},
+ modes:[{id:'o',ru:'От одной точки',kk:'Бір нүктеден',cap:null},{id:'p',ru:'На параллельных прямых',kk:'Параллель түзулерде',cap:null}],
+ slider:{min:-20,max:30,def:20,sym:'λ',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var l=v.n/10,t;
+  if(l===0)t=two(L,'λ = 0: b — нулевой вектор, он коллинеарен любому вектору.','λ = 0: b — нөлдік вектор, ол кез келген векторға коллинеар.');
+  else if(l>0)t=two(L,'λ > 0: b ↑↑ a, векторы сонаправлены.','λ > 0: b ↑↑ a, векторлар бағыттас.');
+  else t=two(L,'λ < 0: b ↑↓ a, векторы противоположно направлены.','λ < 0: b ↑↓ a, векторлар қарама-қарсы бағытталған.');
+  return 'a(1; 2; 2), b = λ·a = '+vtx([l,2*l,2*l])+', |b| = |'+fmtN(l,1)+'|·3 = '+fmtN(Math.abs(l)*3,2)+'. '+t;
+ },
+ build:function(m,v){
+  var s=.34,l=v.n/10,a=[1,2,2],la=[l,2*l,2*l],o=axes3(1.6,.9);
+  if(m==='o'){
+   return o.concat([lin([-1.5,-3,-3],[2.6,5.2,5.2],s,'faint',1.2,1),Ar([0,0,0],a,s,'a','a',[-14,-6]),Ar([0,0,0],la,s,'accent','b',[16,-8],3)]);
+  }
+  var P=[2,-1,0],Pe=vadd(P,la);
+  return o.concat([Ar([0,0,0],a,s,'a','a',[-14,-6]),lin(vadd(P,[-1.2,-2.4,-2.4]),vadd(P,[2.4,4.8,4.8]),s,'faint',1.2,1),Ar(P,Pe,s,'accent','b',[16,-8],3),Pn(P,s,'B',[-12,10])]);
+ }};
+
+ITEMS.k2={tag:'11.3',
+ title:{ru:'Условие коллинеарности в координатах',kk:'Коллинеарлық шарты координаталарда'},
+ stmt:{ru:'Векторы a(x₁; y₁; z₁) и b(x₂; y₂; z₂), a ≠ 0, коллинеарны тогда и только тогда, когда их соответствующие координаты пропорциональны: x₂ = λ·x₁, y₂ = λ·y₁, z₂ = λ·z₁. Если все координаты вектора a отличны от нуля, это равносильно равенству отношений.',
+       kk:'a(x₁; y₁; z₁) және b(x₂; y₂; z₂) векторлары (a ≠ 0) коллинеар болуы үшін олардың сәйкес координаталары пропорционал болуы қажет және жеткілікті: x₂ = λ·x₁, y₂ = λ·y₁, z₂ = λ·z₁. a векторының барлық координаталары нөлден өзгеше болса, бұл қатынастардың теңдігіне пара-пар.'},
+ defs:{ru:['Если x₁, y₁, z₁ ≠ 0, то условие записывают так: x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.','Если одна из координат вектора a равна нулю, то соответствующая координата вектора b тоже равна нулю.'],
+       kk:['x₁, y₁, z₁ ≠ 0 болса, шартты былай жазады: x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.','a векторының бір координатасы нөлге тең болса, b векторының сәйкес координатасы да нөлге тең.']},
+ sym:{ru:'x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ',kk:'x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ'},
+ extra:{ru:'Пример: a(1; 2; 2) и b(2; 4; 4): 2/1 = 4/2 = 4/2 = 2, значит, b = 2·a. Для b(2; 4; 5) отношение 5/2 ≠ 2, векторы не коллинеарны.',kk:'Мысал: a(1; 2; 2) және b(2; 4; 4): 2/1 = 4/2 = 4/2 = 2, демек b = 2·a. b(2; 4; 5) үшін 5/2 ≠ 2, векторлар коллинеар емес.'},
+ real:{ru:'Два луча лазера из одной точки совпадают по направлению, только если отношения координат их направляющих векторов равны.',kk:'Бір нүктеден шыққан екі лазер сәулесінің бағыты олардың бағыттаушы векторлары координаталарының қатынасы тең болғанда ғана беттеседі.'},
+ def:'v',v0:{yaw:-.35,pitch:.35},
+ modes:[{id:'v',ru:'Векторы a и b',kk:'a және b векторлары',cap:null}],
+ slider:{min:0,max:80,def:40,sym:'z₂',unit:'',fmt:dec1},
+ build:function(m,v){
+  var s=.26,z=v.n/10,a=[1,2,2],b=[2,4,z],ok=Math.abs(z-4)<1e-9;
+  return axes3(1.6,.9).concat([lin([-1,-2,-2],[3,6,6],s,'faint',1.2,1),Ar([0,0,0],a,s,'a','a',[-14,-6]),Ar([0,0,0],b,s,ok?'accent':'b','b',[16,-8],3)]);
+ }};
+ITEMS.k2.dyn=function(v,L){
+ var z=v.n/10,r=z/2,ok=Math.abs(r-2)<1e-9;
+ return 'a(1; 2; 2), b(2; 4; '+fmtN(z,1)+'): x₂/x₁ = 2, y₂/y₁ = 2, z₂/z₁ = '+fmtN(z,1)+'/2 = '+fmtN(r,2)+'. '+(ok?two(L,'Отношения равны: векторы коллинеарны, b = 2·a.','Қатынастар тең: векторлар коллинеар, b = 2·a.'):two(L,'Отношения не равны: векторы не коллинеарны.','Қатынастар тең емес: векторлар коллинеар емес.'));
+};
+ITEMS.k2.slider.sym='z₂';
+
+ITEMS.k3={tag:'11.3',
+ title:{ru:'Три точки на одной прямой. Параллельные прямые',kk:'Бір түзуде жатқан үш нүкте. Параллель түзулер'},
+ stmt:{ru:'Точки A, B, C лежат на одной прямой тогда и только тогда, когда векторы AB и AC коллинеарны, то есть AC = λ·AB. Прямые AB и CD параллельны (или совпадают) тогда и только тогда, когда векторы AB и CD коллинеарны.',
+       kk:'A, B, C нүктелері бір түзуде жатуы үшін AB және AC векторлары коллинеар, яғни AC = λ·AB болуы қажет және жеткілікті. AB және CD түзулері параллель (немесе беттесетін) болуы үшін AB және CD векторлары коллинеар болуы қажет және жеткілікті.'},
+ defs:{ru:['Координаты вектора AB: (x_B − x_A; y_B − y_A; z_B − z_A).','Если λ лежит между 0 и 1, точка C лежит между A и B; при λ > 1 точка B лежит между A и C; при λ < 0 точка A лежит между C и B.'],
+       kk:['AB векторының координаталары: (x_B − x_A; y_B − y_A; z_B − z_A).','λ саны 0 мен 1 аралығында болса, C нүктесі A мен B арасында жатады; λ > 1 болса, B нүктесі A мен C арасында; λ < 0 болса, A нүктесі C мен B арасында жатады.']},
+ sym:{ru:'A, B, C ∈ одной прямой  ⇔  AC = λ·AB',kk:'A, B, C бір түзуде  ⇔  AC = λ·AB'},
+ extra:{ru:'Пример: A(1; 1; 1), B(3; 2; 2), C(4; 2,5; 2,5). AB = (2; 1; 1), AC = (3; 1,5; 1,5) = 1,5·AB, значит, точки лежат на одной прямой.',kk:'Мысал: A(1; 1; 1), B(3; 2; 2), C(4; 2,5; 2,5). AB = (2; 1; 1), AC = (3; 1,5; 1,5) = 1,5·AB, демек нүктелер бір түзуде жатады.'},
+ real:{ru:'Три опоры линии электропередачи стоят «в створе», если каждая следующая лежит на прямой, проходящей через первые две.',kk:'Электр желісінің үш тірегі алғашқы екеуі арқылы өтетін түзудің бойында тұрса, олар «бір сызықта» тұр деп есептеледі.'},
+ def:'line',v0:{yaw:-.35,pitch:.35},
+ modes:[{id:'line',ru:'Три точки',kk:'Үш нүкте',cap:null},{id:'par',ru:'Прямые AB и CD',kk:'AB және CD түзулері',cap:null}],
+ slider:{min:-20,max:20,def:0,sym:'d',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var d=v.n/10,ok=Math.abs(d)<1e-9;
+  if(v.mode==='line'){
+   return 'AB = (2; 1; 1), AC = (3; 1,5; '+fmtN(1.5+d,1)+'): '+(ok?two(L,'AC = 1,5·AB, точки лежат на одной прямой.','AC = 1,5·AB, нүктелер бір түзуде жатады.'):two(L,'AC ≠ λ·AB, точки не лежат на одной прямой.','AC ≠ λ·AB, нүктелер бір түзуде жатпайды.'));
+  }
+  return 'AB = (2; 1; 1), CD = (4; 2; '+fmtN(2+d,1)+'): '+(ok?two(L,'CD = 2·AB, прямые AB и CD параллельны.','CD = 2·AB, AB және CD түзулері параллель.'):two(L,'CD не пропорционален AB, прямые не параллельны.','CD векторы AB векторына пропорционал емес, түзулер параллель емес.'));
+ },
+ build:function(m,v){
+  var s=.3,d=v.n/10,o=axes3(1.6,.9),A=[1,1,1],B=[3,2,2],ok=Math.abs(d)<1e-9;
+  if(m==='line'){
+   var C=[4,2.5,2.5+d];
+   return o.concat([lin([-1,0,0],[7,4,4],s,'faint',1.2,1),Ar(A,B,s,'a','',null,2.6),Ar(A,C,s,ok?'accent':'b','',null,3),Pn(A,s,'A',[-14,-8]),Pn(B,s,'B',[12,-10]),Pn(C,s,'C',[14,-8])]);
+  }
+  var Cp=[1,3,0],D=[5,5,2+d];
+  return o.concat([lin(vadd(A,[-1,-.5,-.5]),vadd(B,[2,1,1]),s,'faint',1.2,1),Ar(A,B,s,'a','',null,2.8),Ar(Cp,D,s,ok?'accent':'b','',null,2.8),Pn(A,s,'A',[-14,-8]),Pn(B,s,'B',[12,-10]),Pn(Cp,s,'C',[-14,8]),Pn(D,s,'D',[12,-10])]);
+ }};
+
+/* ================= tab cop ================= */
+var KA=[2,1,0],KB=[0,2,1];
+ITEMS.p1={tag:'11.3',
+ title:{ru:'Компланарные векторы',kk:'Компланар векторлар'},
+ stmt:{ru:'Векторы называются компланарными, если при откладывании от одной точки они оказываются в одной плоскости (то есть параллельны одной плоскости). Два вектора всегда компланарны; три вектора, два из которых коллинеарны, тоже компланарны.',
+       kk:'Бір нүктеден салғанда бір жазықтықта жататын (яғни бір жазықтыққа параллель) векторлар компланар деп аталады. Кез келген екі вектор компланар; үш вектордың екеуі коллинеар болса, олар да компланар.'},
+ defs:{ru:['Три вектора, среди которых есть нулевой, компланарны.','Если векторы a, b, c не лежат в одной плоскости, их называют некомпланарными.'],
+       kk:['Үш вектордың ішінде нөлдік вектор болса, олар компланар.','a, b, c векторлары бір жазықтықта жатпаса, оларды компланар емес векторлар деп атайды.']},
+ sym:{ru:'a, b, c компланарны ⇔ лежат в одной плоскости',kk:'a, b, c компланар ⇔ бір жазықтықта жатады'},
+ extra:{ru:'Пример: три ребра куба, выходящие из одной вершины, некомпланарны, а вектор, лежащий в плоскости грани, и два ребра этой грани компланарны.',kk:'Мысал: кубтың бір төбесінен шығатын үш қыры компланар емес, ал жақ жазықтығында жатқан вектор мен сол жақтың екі қыры компланар.'},
+ real:{ru:'Крышка стола и два вектора вдоль её краёв лежат в одной плоскости. Ножка стола, поднимающаяся вверх, уже выходит из этой плоскости.',kk:'Үстел беті мен оның жиектері бойындағы екі вектор бір жазықтықта жатады. Жоғары қарай көтерілетін үстел аяғы бұл жазықтықтан шығып тұр.'},
+ def:'v',v0:{yaw:-.55,pitch:.4},
+ modes:[{id:'v',ru:'Векторы a, b, c',kk:'a, b, c векторлары',cap:null}],
+ slider:{min:-20,max:20,def:12,sym:'h',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var h=v.n/10,ok=Math.abs(h)<1e-9;
+  return 'c = ½a + ½b + (0; 0; '+fmtN(h,1)+'): '+(ok?two(L,'c лежит в плоскости векторов a и b: векторы компланарны.','c векторы a және b векторларының жазықтығында жатыр: векторлар компланар.'):two(L,'c выходит из плоскости векторов a и b: векторы не компланарны.','c векторы a және b векторларының жазықтығынан шығып тұр: векторлар компланар емес.'));
+ },
+ build:function(m,v){
+  var s=.6,h=v.n/10,a=KA,b=KB,c=vadd(vadd(vmul(a,.5),vmul(b,.5)),[0,0,h]),ok=Math.abs(h)<1e-9;
+  return axes3(1.5,.7).concat([planeQ([0,0,0],a,b,.9,s,'a'),Ar([0,0,0],a,s,'a','a',[-14,-6]),Ar([0,0,0],b,s,'b','b',[-12,-8]),Ar([0,0,0],c,s,ok?'accent':'c','c',[14,-8],3)]);
+ }};
+
+ITEMS.p2={tag:'11.3',
+ title:{ru:'Признак компланарности: c = x·a + y·b',kk:'Компланарлық белгісі: c = x·a + y·b'},
+ stmt:{ru:'Если вектор c можно представить в виде c = x·a + y·b, то векторы a, b, c компланарны. Обратно: если a и b не коллинеарны, а векторы a, b, c компланарны, то c = x·a + y·b, причём числа x и y определены единственным образом.',
+       kk:'Егер c векторын c = x·a + y·b түрінде жазуға болса, онда a, b, c векторлары компланар. Керісінше: a және b векторлары коллинеар емес, ал a, b, c компланар болса, онда c = x·a + y·b және x, y сандары бір мәнді анықталады.'},
+ defs:{ru:['Числа x и y называют коэффициентами разложения вектора c по неколлинеарным векторам a и b.','Параллелограмм, построенный на векторах x·a и y·b, лежит в плоскости векторов a и b; c — его диагональ.'],
+       kk:['x және y сандарын c векторын коллинеар емес a және b векторлары бойынша жіктеу коэффициенттері деп атайды.','x·a және y·b векторларына салынған параллелограмм a және b векторларының жазықтығында жатады; c — оның диагоналі.']},
+ sym:{ru:'c = x·a + y·b  ⇒  a, b, c компланарны',kk:'c = x·a + y·b  ⇒  a, b, c компланар'},
+ extra:{ru:'Пример: a(2; 1; 0), b(0; 2; 1), c(2; 5; 2). Здесь c = 1·a + 2·b, значит, векторы a, b, c компланарны.',kk:'Мысал: a(2; 1; 0), b(0; 2; 1), c(2; 5; 2). Мұнда c = 1·a + 2·b, демек a, b, c векторлары компланар.'},
+ real:{ru:'Дрон летит по плоскому полю: сначала x шагов вдоль одной тропы, потом y шагов вдоль другой. Весь путь лежит в плоскости поля.',kk:'Дрон жазық алаңда ұшады: алдымен бір соқпақ бойымен x қадам, сосын екінші соқпақ бойымен y қадам. Бүкіл жол алаң жазықтығында жатады.'},
+ proof:[
+  {ru:'Отложим векторы a и b от точки O. Пусть они лежат в плоскости α.',kk:'a және b векторларын O нүктесінен саламыз. Олар α жазықтығында жатсын.'},
+  {ru:'Векторы x·a и y·b коллинеарны a и b соответственно, поэтому лежат в α. Их сумма c = x·a + y·b — диагональ параллелограмма в α.',kk:'x·a және y·b векторлары сәйкесінше a және b векторларына коллинеар, сондықтан α жазықтығында жатады. Олардың қосындысы c = x·a + y·b — α жазықтығындағы параллелограмның диагоналі.'},
+  {ru:'Значит, c лежит в α, и векторы a, b, c компланарны.',kk:'Демек, c векторы α жазықтығында жатады, ал a, b, c векторлары компланар.'}],
+ def:'y1',v0:{yaw:-.55,pitch:.4},
+ modes:[{id:'y1',ru:'y = 1',kk:'y = 1',cap:null},{id:'y2',ru:'y = 2',kk:'y = 2',cap:null},{id:'ym',ru:'y = −1',kk:'y = −1',cap:null}],
+ slider:{min:-10,max:20,def:10,sym:'x',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var x=v.n/10,y=v.mode==='y1'?1:(v.mode==='y2'?2:-1),c=vadd(vmul(KA,x),vmul(KB,y));
+  return 'c = '+fmtN(x,1)+'·a + '+(y<0?'('+y+')':y)+'·b = '+vtx(c)+two(L,'. Вектор c лежит в плоскости a и b.','. c векторы a және b жазықтығында жатыр.');
+ },
+ build:function(m,v){
+  var s=.55,x=v.n/10,y=m==='y1'?1:(m==='y2'?2:-1),a=KA,b=KB,xa=vmul(a,x),yb=vmul(b,y),c=vadd(xa,yb),O=[0,0,0];
+  return axes3(1.5,.7).concat([planeQ(O,a,b,1.1,s,'a'),
+   Ar(O,a,s,'a','a',[-14,-6],2.2),Ar(O,b,s,'b','b',[-12,-8],2.2),
+   dashed(A3(xa,s),A3(c,s),'faint'),dashed(A3(yb,s),A3(c,s),'faint'),
+   Ar(O,c,s,'accent','c',[14,-8],3.2)]);
+ }};
+
+ITEMS.p3={tag:'11.3',
+ title:{ru:'Компланарность в координатах',kk:'Компланарлық координаталарда'},
+ stmt:{ru:'Чтобы проверить, компланарны ли векторы a, b, c, нужно выяснить, раскладывается ли c по a и b: c = x·a + y·b. Это даёт систему трёх уравнений с двумя неизвестными x, y. Векторы компланарны тогда и только тогда, когда система имеет решение.',
+       kk:'a, b, c векторларының компланарлығын тексеру үшін c векторының a және b арқылы жіктелетінін анықтау керек: c = x·a + y·b. Бұл x, y белгісіздері бар үш теңдеуден тұратын жүйені береді. Жүйенің шешімі болғанда ғана векторлар компланар.'},
+ defs:{ru:['Из двух уравнений находят x и y, а третье уравнение служит проверкой.','Определитель Δ из координат трёх векторов равен нулю тогда и только тогда, когда векторы компланарны.'],
+       kk:['x және y екі теңдеуден табылады, ал үшінші теңдеу тексеру болып табылады.','Үш вектордың координаталарынан құралған Δ анықтауышы нөлге тең болғанда ғана векторлар компланар.']},
+ sym:{ru:'x₃ = x·x₁ + y·x₂,  y₃ = x·y₁ + y·y₂,  z₃ = x·z₁ + y·z₂',kk:'x₃ = x·x₁ + y·x₂,  y₃ = x·y₁ + y·y₂,  z₃ = x·z₁ + y·z₂'},
+ extra:{ru:'Пример: a(2; 0; 0), b(0; 2; 0), c(1; 1; h). Система 2x = 1, 2y = 1, 0 = h решается только при h = 0, тогда c = ½a + ½b.',kk:'Мысал: a(2; 0; 0), b(0; 2; 0), c(1; 1; h). 2x = 1, 2y = 1, 0 = h жүйесі тек h = 0 болғанда шешіледі, сонда c = ½a + ½b.'},
+ real:{ru:'Подъёмный кран: стрела, трос и груз лежат в одной вертикальной плоскости, пока груз не раскачивается в сторону.',kk:'Көтергіш кран: жүк бүйірге тербелмейінше, тіреуіш, арқан және жүк бір тік жазықтықта жатады.'},
+ def:'v',v0:{yaw:-.55,pitch:.4},
+ modes:[{id:'v',ru:'Векторы a, b, c',kk:'a, b, c векторлары',cap:null}],
+ slider:{min:-30,max:30,def:12,sym:'h',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var h=v.n/10,ok=Math.abs(h)<1e-9,D=4*h;
+  return 'a(2; 0; 0), b(0; 2; 0), c(1; 1; '+fmtN(h,1)+'): '+two(L,'Δ = 4·'+fmtN(h,1)+' = ','Δ = 4·'+fmtN(h,1)+' = ')+fmtN(D,1)+'. '+(ok?two(L,'Δ = 0: система имеет решение x = ½, y = ½, векторы компланарны.','Δ = 0: жүйенің шешімі бар x = ½, y = ½, векторлар компланар.'):two(L,'Δ ≠ 0: третье уравнение 0 = h не выполняется, векторы некомпланарны.','Δ ≠ 0: үшінші 0 = h теңдеуі орындалмайды, векторлар компланар емес.'));
+ },
+ build:function(m,v){
+  var s=.5,h=v.n/10,a=[2,0,0],b=[0,2,0],c=[1,1,h],ok=Math.abs(h)<1e-9;
+  return axes3(1.5,.7).concat([planeQ([1,1,0],[1,0,0],[0,1,0],1.7,s,'a'),
+   Ar([0,0,0],a,s,'a','a',[-6,14],2.6),Ar([0,0,0],b,s,'b','b',[-12,-8],2.6),Ar([0,0,0],c,s,ok?'accent':'c','c',[14,-8],3.2),
+   dashed(A3([1,1,0],s),A3(c,s),'faint')]);
+ }};
+
+/* ================= tab dec ================= */
+ITEMS.r1={tag:'11.3',
+ title:{ru:'Правило параллелепипеда',kk:'Параллелепипед ережесі'},
+ stmt:{ru:'Если векторы a, b, c некомпланарны и отложены от одной точки O, то их сумма a + b + c равна вектору OD, где OD — диагональ параллелепипеда, построенного на этих векторах.',
+       kk:'Егер a, b, c векторлары компланар емес және бір O нүктесінен салынса, олардың қосындысы a + b + c параллелепипед диагоналі OD векторына тең, мұндағы параллелепипед осы векторларға салынған.'},
+ defs:{ru:['Параллелепипед строят на векторах a, b, c как на рёбрах, выходящих из точки O.','Диагональ OD — вектор из начала O в противоположную вершину параллелепипеда.'],
+       kk:['Параллелепипедті a, b, c векторларына O нүктесінен шығатын қырлар ретінде салады.','OD диагоналі — бастауы O болатын, параллелепипедтің қарама-қарсы төбесіне бағытталған вектор.']},
+ sym:{ru:'OD = a + b + c',kk:'OD = a + b + c'},
+ extra:{ru:'Для прямоугольного параллелепипеда с рёбрами 2, 1,6, 1,4 диагональ имеет длину √(4 + 2,56 + 1,96) = √8,52 ≈ 2,92.',kk:'Қырлары 2, 1,6, 1,4 болатын тікбұрышты параллелепипед үшін диагональдің ұзындығы √(4 + 2,56 + 1,96) = √8,52 ≈ 2,92.'},
+ real:{ru:'Три силы, приложенные к одной точке под углом друг к другу, дают равнодействующую — диагональ параллелепипеда сил.',kk:'Бір нүктеге бір-біріне бұрыш жасай түсірілген үш күш — күштер параллелепипедінің диагоналі болатын тең әсерлі күшті береді.'},
+ proof:[
+  {ru:'Сначала сложим a и b по правилу параллелограмма: a + b = OE, где OE — диагональ основания.',kk:'Алдымен a және b векторларын параллелограмм ережесі бойынша қосамыз: a + b = OE, мұндағы OE — табанның диагоналі.'},
+  {ru:'Затем к вектору OE прибавим c: вектор ED равен c, поэтому OE + c = OE + ED = OD.',kk:'Сосын OE векторына c векторын қосамыз: ED векторы c векторына тең, сондықтан OE + c = OE + ED = OD.'},
+  {ru:'Следовательно, a + b + c = OD.',kk:'Демек, a + b + c = OD.'}],
+ def:'rect',v0:{yaw:-.5,pitch:.4},
+ modes:[{id:'rect',ru:'Прямоугольный',kk:'Тікбұрышты',cap:null},{id:'skew',ru:'Наклонный',kk:'Көлбеу',cap:null}],
+ dyn:function(v,L){
+  var a=[2,0,0],b=v.mode==='rect'?[0,1.6,0]:[.6,1.6,0],c=v.mode==='rect'?[0,0,1.4]:[.4,.5,1.4],d=vadd(a,vadd(b,c));
+  return 'a'+vtx(a)+' + b'+vtx(b)+' + c'+vtx(c)+' = OD'+vtx(d)+'.';
+ },
+ build:function(m,v){
+  var s=.55,a=[2,0,0],b=m==='rect'?[0,1.6,0]:[.6,1.6,0],c=m==='rect'?[0,0,1.4]:[.4,.5,1.4],O=[0,0,0],d=vadd(a,vadd(b,c));
+  return axes3(1.5,.5).concat(parBox(O,a,b,c,s),[Ar(O,a,s,'a','a',[0,18],2.6),Ar(O,b,s,'b','b',[-14,-6],2.6),Ar(O,c,s,'c','c',[-14,-4],2.6),Ar(O,d,s,'accent','d',[14,-8],3.4),Pn(d,s,'D',[12,-10])]);
+ }};
+
+ITEMS.r2={tag:'11.3',
+ title:{ru:'Разложение вектора по трём некомпланарным векторам',kk:'Векторды үш компланар емес вектор бойынша жіктеу'},
+ stmt:{ru:'Если векторы a, b, c некомпланарны, то любой вектор d пространства можно разложить по ним, причём единственным образом: d = x·a + y·b + z·c. Числа x, y, z называют коэффициентами разложения.',
+       kk:'Егер a, b, c векторлары компланар емес болса, кеңістіктің кез келген d векторын олар арқылы жіктеуге болады және жалғыз тәсілмен: d = x·a + y·b + z·c. x, y, z сандарын жіктеу коэффициенттері деп атайды.'},
+ defs:{ru:['Три некомпланарных вектора называют базисом пространства.','Координатные векторы i, j, k — частный случай: d(x; y; z) = x·i + y·j + z·k.'],
+       kk:['Компланар емес үш векторды кеңістіктің базисі деп атайды.','i, j, k координаталық векторлары — дербес жағдай: d(x; y; z) = x·i + y·j + z·k.']},
+ sym:{ru:'d = x·a + y·b + z·c',kk:'d = x·a + y·b + z·c'},
+ extra:{ru:'Пример: a(1; 1; 0), b(1; 0; 1), c(0; 1; 1), d(5; 4; 3). Из системы x + y = 5, x + z = 4, y + z = 3 находим x = 3, y = 2, z = 1, то есть d = 3a + 2b + c.',kk:'Мысал: a(1; 1; 0), b(1; 0; 1), c(0; 1; 1), d(5; 4; 3). x + y = 5, x + z = 4, y + z = 3 жүйесінен x = 3, y = 2, z = 1, яғни d = 3a + 2b + c.'},
+ real:{ru:'Положение дрона задают тремя числами: сколько шагов на север, на восток и вверх. Это разложение вектора по трём независимым направлениям.',kk:'Дронның орнын үш сан арқылы береді: солтүстікке, шығысқа және жоғарыға қанша қадам. Бұл вектордың үш тәуелсіз бағыт бойынша жіктелуі.'},
+ proof:[
+  {ru:'Отложим a, b, c и d от одной точки O. Проведём через конец d плоскости, параллельные плоскостям пар (b, c), (a, c), (a, b).',kk:'a, b, c және d векторларын O нүктесінен саламыз. d векторының ұшы арқылы (b, c), (a, c), (a, b) жұптарының жазықтықтарына параллель жазықтықтар жүргіземіз.'},
+  {ru:'Получится параллелепипед, рёбра которого лежат на прямых векторов a, b, c, а d — его диагональ.',kk:'a, b, c векторларының түзулерінде жататын қырлары бар параллелепипед шығады, ал d — оның диагоналі.'},
+  {ru:'По правилу параллелепипеда d = x·a + y·b + z·c. Единственность следует из того, что a, b, c некомпланарны.',kk:'Параллелепипед ережесі бойынша d = x·a + y·b + z·c. Жалғыздығы a, b, c векторларының компланар еместігінен шығады.'}],
+ def:'p1',v0:{yaw:-.5,pitch:.4},
+ modes:[{id:'p1',ru:'y = 1, z = 1',kk:'y = 1, z = 1',cap:null},{id:'p2',ru:'y = 2, z = −1',kk:'y = 2, z = −1',cap:null}],
+ slider:{min:-10,max:20,def:10,sym:'x',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var x=v.n/10,y=v.mode==='p1'?1:2,z=v.mode==='p1'?1:-1,d=vadd(vmul(RA,x),vadd(vmul(RB,y),vmul(RC,z)));
+  return 'd = '+fmtN(x,1)+'·a + '+y+'·b + '+(z<0?'('+z+')':z)+'·c = '+vtx(d)+two(L,'. Коэффициенты определены единственным образом.','. Коэффициенттер бір мәнді анықталған.');
+ },
+ build:function(m,v){
+  var s=.44,x=v.n/10,y=m==='p1'?1:2,z=m==='p1'?1:-1,O=[0,0,0],xa=vmul(RA,x),yb=vmul(RB,y),zc=vmul(RC,z),p1=xa,p2=vadd(xa,yb),d=vadd(p2,zc);
+  return axes3(1.5,.5).concat([Ar(O,RA,s,'a','a',[0,16],2.2),Ar(O,RB,s,'b','b',[-14,-6],2.2),Ar(O,RC,s,'c','c',[-14,-4],2.2),
+   lin(O,p1,s,'a',3),lin(p1,p2,s,'b',3),lin(p2,d,s,'c',3),Ar(O,d,s,'accent','d',[14,-8],3.4),Pn(d,s,'D',[12,-10])]);
+ }};
+var RA=[2,0,0],RB=[.8,1.6,0],RC=[.3,.5,1.5];
+
+ITEMS.r3={tag:'11.3',
+ title:{ru:'Четыре точки в одной плоскости',kk:'Бір жазықтықта жатқан төрт нүкте'},
+ stmt:{ru:'Точки A, B, C, D лежат в одной плоскости тогда и только тогда, когда векторы AB, AC, AD компланарны. Если AB и AC не коллинеарны, то это значит, что AD = x·AB + y·AC.',
+       kk:'A, B, C, D нүктелері бір жазықтықта жатуы үшін AB, AC, AD векторлары компланар болуы қажет және жеткілікті. AB және AC коллинеар емес болса, бұл AD = x·AB + y·AC дегенді білдіреді.'},
+ defs:{ru:['Сначала находят координаты векторов AB, AC, AD, вычитая координаты точки A.','Затем проверяют, раскладывается ли AD по AB и AC.'],
+       kk:['Алдымен A нүктесінің координаталарын шегеріп, AB, AC, AD векторларының координаталарын табады.','Сосын AD векторының AB және AC арқылы жіктелетінін тексереді.']},
+ sym:{ru:'A, B, C, D ∈ одной плоскости  ⇔  AD = x·AB + y·AC',kk:'A, B, C, D бір жазықтықта  ⇔  AD = x·AB + y·AC'},
+ extra:{ru:'Пример: A(1; 1; 0), B(3; 1; 1), C(1; 3; 1), D(2; 2; 1). AB = (2; 0; 1), AC = (0; 2; 1), AD = (1; 1; 1) = ½AB + ½AC, поэтому четыре точки лежат в одной плоскости.',kk:'Мысал: A(1; 1; 0), B(3; 1; 1), C(1; 3; 1), D(2; 2; 1). AB = (2; 0; 1), AC = (0; 2; 1), AD = (1; 1; 1) = ½AB + ½AC, сондықтан төрт нүкте бір жазықтықта жатады.'},
+ real:{ru:'Четыре ножки устойчивого стола должны лежать в одной плоскости: если одна ножка «выше», стол качается.',kk:'Тұрақты үстелдің төрт аяғы бір жазықтықта жатуы керек: бір аяғы «биік» болса, үстел шайқалады.'},
+ def:'v',v0:{yaw:-.5,pitch:.4},
+ modes:[{id:'v',ru:'Точки A, B, C, D',kk:'A, B, C, D нүктелері',cap:null}],
+ slider:{min:-20,max:20,def:12,sym:'h',unit:'',fmt:dec1},
+ dyn:function(v,L){
+  var h=v.n/10,ok=Math.abs(h)<1e-9;
+  return 'AB = (2; 0; 1), AC = (0; 2; 1), AD = (1; 1; '+fmtN(1+h,1)+'): '+(ok?two(L,'AD = ½·AB + ½·AC, четыре точки лежат в одной плоскости.','AD = ½·AB + ½·AC, төрт нүкте бір жазықтықта жатады.'):two(L,'AD не раскладывается по AB и AC, точка D выходит из плоскости ABC.','AD векторы AB және AC арқылы жіктелмейді, D нүктесі ABC жазықтығынан шығып тұр.'));
+ },
+ build:function(m,v){
+  var s=.4,h=v.n/10,A=[1,1,0],B=[3,1,1],C=[1,3,1],D=[2,2,1+h],ok=Math.abs(h)<1e-9;
+  return axes3(1.5,.6).concat([planeQ(A,[2,0,1],[0,2,1],.8,s,'a'),Ar(A,B,s,'a','',null,2.2),Ar(A,C,s,'b','',null,2.2),Ar(A,D,s,ok?'accent':'c','',null,3),
+   Pn(A,s,'A',[-14,-8]),Pn(B,s,'B',[12,-10]),Pn(C,s,'C',[-14,-8]),Pn(D,s,'D',[12,-10])]);
+ }};
+
+/* ================= solver: coordinates and vectors (§21, §22, §23) ================= */
+function T2(ru,kk){return {ru:ru,kk:kk};}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=a%b;a=b;b=t;}return a;}
+function exactStr(x2){
+ if(!isFinite(x2))return null;
+ if(Math.abs(x2)<1e-12)return '0';
+ var den,m;
+ for(den=1;den<=720;den++){m=x2*den;if(Math.abs(m-Math.round(m))<1e-8*Math.max(1,m)&&Math.round(m)>0)break;}
+ if(den>720)return null;
+ m=Math.round(m);
+ var mn=m*den,k=1,r=mn,d;
+ for(d=2;d*d<=r;d++){while(r%(d*d)===0){r/=d*d;k*=d;}}
+ var g=gcd(k,den);k/=g;den/=g;
+ if(r===1)return den===1?String(k):k+'/'+den;
+ var top=(k===1?'':String(k))+'√'+r;
+ return den===1?top:top+'/'+den;
+}
+function sqrtStr(x2,d){var e=exactStr(x2);return e?(/^\d+$/.test(e)?e:e+' ≈ '+fmtN(d,4)):'≈ '+fmtN(d,4);}
+function cs(v){return '('+v.map(function(x){return fmtN(x,3);}).join('; ')+')';}
+function pn(x){return x<0?'('+fmtN(x,3)+')':fmtN(x,3);}
+function decStr(a){
+ var nm=['i','j','k'],s='',i,c,ab;
+ for(i=0;i<3;i++){c=a[i];if(Math.abs(c)<1e-12)continue;ab=Math.abs(c);
+  s+=(s?(c<0?' − ':' + '):(c<0?'−':''))+(Math.abs(ab-1)<1e-12?'':fmtN(ab,3)+'·')+nm[i];}
+ return s||'0';
+}
+function isZ(a){return Math.abs(a[0])<1e-12&&Math.abs(a[1])<1e-12&&Math.abs(a[2])<1e-12;}
+
+function eqn(x,y){return Math.abs(x-y)<1e-9*Math.max(1,Math.abs(x),Math.abs(y));}
+var XN=['x','y','z'];
+/* a,b collinear? returns {ok,lam,why} (lam: b = lam*a or a = lam*b for zero case) */
+function colInfo(a,b){
+ var i,lam=null;
+ if(isZ(a)&&isZ(b))return {ok:true,zero:'ab',lam:0};
+ if(isZ(a))return {ok:true,zero:'a',lam:0};
+ if(isZ(b))return {ok:true,zero:'b',lam:0};
+ for(i=0;i<3;i++)if(Math.abs(a[i])>1e-12){lam=b[i]/a[i];break;}
+ for(i=0;i<3;i++)if(!eqn(b[i],lam*a[i]))return {ok:false,lam:lam};
+ return {ok:true,lam:lam};
+}
+function ratioLines(a,b,n1,n2){
+ var r=[],i;
+ for(i=0;i<3;i++){
+  if(Math.abs(a[i])>1e-12)r.push(XN[i]+'₂ / '+XN[i]+'₁ = '+pn(b[i])+' / '+pn(a[i])+' = '+fr(b[i]/a[i]));
+  else r.push(XN[i]+'₁ = 0, '+XN[i]+'₂ = '+fmtN(b[i],3)+(Math.abs(b[i])<1e-12?' ✓':' ✗'));
+ }
+ return r.join(';  ');
+}
+function pf(x){return x<0?'('+fr(x)+')':fr(x);}
+function lc(co,ns){
+ var o='',i,c,ab;
+ for(i=0;i<co.length;i++){
+  c=co[i];if(Math.abs(c)<1e-12)continue;ab=Math.abs(c);
+  o+=(o?(c<0?' − ':' + '):(c<0?'−':''))+(Math.abs(ab-1)<1e-12?'':fr(ab)+'·')+ns[i];
+ }
+ return o||'0';
+}
+function lamWord(l){
+ if(Math.abs(l)<1e-12)return T2('b — нулевой вектор','b — нөлдік вектор');
+ return l>0?T2('сонаправлены (λ > 0)','бағыттас (λ > 0)'):T2('противоположно направлены (λ < 0)','қарама-қарсы бағытталған (λ < 0)');
+}
+/* three vectors coplanar? */
+function copInfo(a,b,c){
+ var D=det3(a,b,c),r={D:D,ok:false,why:'',x:null,y:null,used:null};
+ if(isZ(a)||isZ(b)||isZ(c)){r.ok=true;r.why='zero';return r;}
+ var pairs=[[a,b,c,'ab'],[a,c,b,'ac'],[b,c,a,'bc']],t;
+ for(t=0;t<3;t++){
+  var u=pairs[t][0],w=pairs[t][1];
+  if(isZ(vcross(u,w))){r.ok=true;r.why='col';r.pair=pairs[t][3];return r;}
+ }
+ /* a, b non-collinear: c = x a + y b */
+ var i,j,k,best=null,bd=0;
+ for(i=0;i<3;i++)for(j=i+1;j<3;j++){var d2=a[i]*b[j]-a[j]*b[i];if(Math.abs(d2)>Math.abs(bd)){bd=d2;best=[i,j];}}
+ i=best[0];j=best[1];k=3-i-j;
+ var x=(c[i]*b[j]-c[j]*b[i])/bd,y=(a[i]*c[j]-a[j]*c[i])/bd;
+ r.x=x;r.y=y;r.used=[i,j,k];r.bd=bd;
+ r.ok=eqn(c[k],x*a[k]+y*b[k]);
+ r.why=r.ok?'dec':'no';
+ r.res=c[k]-(x*a[k]+y*b[k]);
+ return r;
+}
+function sysLines(a,b,c){
+ return [0,1,2].map(function(i){return pn(c[i])+' = x·'+pn(a[i])+' + y·'+pn(b[i]);}).join(';  ');
+}
+function vArr(p,q,col,lab,lo,w){return ln(p,q,{c:col,w:w||2.8,arrow:1,lab:lab,le:'m',lt:.5,lo:lo||[10,-8]});}
+
+var CKINDS=[
+ {id:'col2',ru:'Коллинеарны ли векторы a и b',kk:'a және b векторлары коллинеар ма'},
+ {id:'unk',ru:'Неизвестная координата коллинеарных векторов',kk:'Коллинеар векторлардың белгісіз координатасы'},
+ {id:'col3p',ru:'Лежат ли три точки на одной прямой',kk:'Үш нүкте бір түзуде жата ма'},
+ {id:'par4',ru:'Параллельны ли прямые AB и CD',kk:'AB және CD түзулері параллель ме'},
+ {id:'cop3',ru:'Компланарны ли векторы a, b, c',kk:'a, b, c векторлары компланар ма'},
+ {id:'cop4p',ru:'Лежат ли четыре точки в одной плоскости',kk:'Төрт нүкте бір жазықтықта жата ма'},
+ {id:'dec3',ru:'Разложение вектора d по a, b, c',kk:'d векторын a, b, c бойынша жіктеу'}
+];
+var CFLD={
+ col2:[['k1','a','v'],['k2','b','v']],unk:[['k1','a','v'],['u','b₁','n'],['w','b₂','n']],
+ col3p:[['k1','A','v'],['k2','B','v'],['k3','C','v']],par4:[['k1','A','v'],['k2','B','v'],['k3','C','v'],['k4','D','v']],
+ cop3:[['k1','a','v'],['k2','b','v'],['k3','c','v']],cop4p:[['k1','A','v'],['k2','B','v'],['k3','C','v'],['k4','D','v']],
+ dec3:[['k1','a','v'],['k2','b','v'],['k3','c','v'],['k4','d','v']]
+};
+var CDEF={
+ col2:{k1:[1,2,3],k2:[2,4,6]},unk:{k1:[2,4,6],u:1,w:2},
+ col3p:{k1:[1,2,3],k2:[3,6,9],k3:[2,4,6]},par4:{k1:[1,0,0],k2:[3,2,4],k3:[0,1,1],k4:[1,2,3]},
+ cop3:{k1:[1,2,3],k2:[2,1,0],k3:[3,3,3]},cop4p:{k1:[1,0,0],k2:[0,1,0],k3:[0,0,1],k4:[1,1,-1]},
+ dec3:{k1:[1,1,0],k2:[1,0,1],k3:[0,1,1],k4:[5,4,3]}
+};
+function sref(k,a,b){return {tag:{ru:k,kk:k},ru:a,kk:b};}
+var SOLEX=[
+ {id:'e1',tag:'11.3',ru:'a(1; 2; 3) и b(2; 4; 6): коллинеарны?',kk:'a(1; 2; 3) және b(2; 4; 6): коллинеар ма?',kind:'col2',vals:{k1:[1,2,3],k2:[2,4,6]}},
+ {id:'e2',tag:'11.3',ru:'a(2; −1; 4) и b(−4; 2; −8): коллинеарны?',kk:'a(2; −1; 4) және b(−4; 2; −8): коллинеар ма?',kind:'col2',vals:{k1:[2,-1,4],k2:[-4,2,-8]}},
+ {id:'e3',tag:'11.3',ru:'a(1; 2; 3) и b(2; 4; 7): коллинеарны?',kk:'a(1; 2; 3) және b(2; 4; 7): коллинеар ма?',kind:'col2',vals:{k1:[1,2,3],k2:[2,4,7]}},
+ {id:'e4',tag:'11.3',ru:'При каком m векторы a(2; 4; 6) и b(1; 2; m) коллинеарны?',kk:'m-нің қандай мәнінде a(2; 4; 6) және b(1; 2; m) векторлары коллинеар?',kind:'unk',vals:{k1:[2,4,6],u:1,w:2}},
+ {id:'e5',tag:'11.3',ru:'При каком m векторы a(3; −6; 9) и b(−1; 2; m) коллинеарны?',kk:'m-нің қандай мәнінде a(3; −6; 9) және b(−1; 2; m) векторлары коллинеар?',kind:'unk',vals:{k1:[3,-6,9],u:-1,w:2}},
+ {id:'e6',tag:'11.3',ru:'Точки A(1; 2; 3), B(3; 6; 9), C(2; 4; 6) на одной прямой?',kk:'A(1; 2; 3), B(3; 6; 9), C(2; 4; 6) нүктелері бір түзуде жата ма?',kind:'col3p',vals:{k1:[1,2,3],k2:[3,6,9],k3:[2,4,6]}},
+ {id:'e7',tag:'11.3',ru:'Точки A(0; 0; 0), B(1; 2; 3), C(2; 4; 7) на одной прямой?',kk:'A(0; 0; 0), B(1; 2; 3), C(2; 4; 7) нүктелері бір түзуде жата ма?',kind:'col3p',vals:{k1:[0,0,0],k2:[1,2,3],k3:[2,4,7]}},
+ {id:'e8',tag:'11.3',ru:'Прямые AB и CD: A(1; 0; 0), B(3; 2; 4), C(0; 1; 1), D(1; 2; 3)',kk:'AB және CD түзулері: A(1; 0; 0), B(3; 2; 4), C(0; 1; 1), D(1; 2; 3)',kind:'par4',vals:{k1:[1,0,0],k2:[3,2,4],k3:[0,1,1],k4:[1,2,3]}},
+ {id:'e9',tag:'11.3',ru:'a(1; 2; 3), b(2; 1; 0), c(3; 3; 3): компланарны?',kk:'a(1; 2; 3), b(2; 1; 0), c(3; 3; 3): компланар ма?',kind:'cop3',vals:{k1:[1,2,3],k2:[2,1,0],k3:[3,3,3]}},
+ {id:'e10',tag:'11.3',ru:'i(1; 0; 0), j(0; 1; 0), k(0; 0; 1): компланарны?',kk:'i(1; 0; 0), j(0; 1; 0), k(0; 0; 1): компланар ма?',kind:'cop3',vals:{k1:[1,0,0],k2:[0,1,0],k3:[0,0,1]}},
+ {id:'e11',tag:'11.3',ru:'Точки A(1; 0; 0), B(0; 1; 0), C(0; 0; 1), D(1; 1; −1) в одной плоскости?',kk:'A(1; 0; 0), B(0; 1; 0), C(0; 0; 1), D(1; 1; −1) нүктелері бір жазықтықта жата ма?',kind:'cop4p',vals:{k1:[1,0,0],k2:[0,1,0],k3:[0,0,1],k4:[1,1,-1]}},
+ {id:'e12',tag:'11.3',ru:'Разложить d(5; 4; 3) по a(1; 1; 0), b(1; 0; 1), c(0; 1; 1)',kk:'d(5; 4; 3) векторын a(1; 1; 0), b(1; 0; 1), c(0; 1; 1) бойынша жіктеу',kind:'dec3',vals:{k1:[1,1,0],k2:[1,0,1],k3:[0,1,1],k4:[5,4,3]}}
+];
+
+function cSolve(kind,V){
+ var out={ok:true,res:[],steps:[],pts:[],prims:[],box:null},a=V.k1,b=V.k2,c3=V.k3,d4=V.k4,i;
+ function bad(ru,kk){out.ok=false;out.err=T2(ru,kk);return out;}
+ var P=function(p,lab,o){return pt(p,lab,{o:o||[11,-10]});};
+ var YES=T2('да','иә'),NO=T2('нет','жоқ');
+ if(kind==='col2'){
+  var ci=colInfo(a,b),O=[0,0,0];
+  out.res=[{k:T2('Векторы a и b коллинеарны?','a және b векторлары коллинеар ма?'),v:ci.ok?YES:NO,main:1}];
+  out.steps=[T2('Ненулевые векторы a и b коллинеарны тогда и только тогда, когда b = λ·a, то есть координаты пропорциональны: x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.','Нөлдік емес a және b векторлары коллинеар болуы үшін b = λ·a, яғни координаталары пропорционал болуы керек: x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.')];
+  if(ci.zero){
+   out.steps.push(T2('Нулевой вектор коллинеарен любому вектору, поэтому векторы a и b коллинеарны.','Нөлдік вектор кез келген векторға коллинеар, сондықтан a және b векторлары коллинеар.'));
+  }else{
+   var rl=ratioLines(a,b);
+   out.steps.push(T2('Находим отношения координат: '+rl+'.','Координаталардың қатынасын табамыз: '+rl+'.'));
+   if(ci.ok){
+    out.res.push({k:T2('Число λ (b = λ·a)','λ саны (b = λ·a)'),v:fr(ci.lam)});
+    out.res.push({k:T2('Направление','Бағыты'),v:lamWord(ci.lam)});
+    out.steps.push(T2('Все отношения равны '+fr(ci.lam)+', значит, b = '+fr(ci.lam)+'·a: векторы коллинеарны, '+lamWord(ci.lam).ru+'.','Барлық қатынастар '+fr(ci.lam)+'-ге тең, демек b = '+fr(ci.lam)+'·a: векторлар коллинеар, '+lamWord(ci.lam).kk+'.'));
+    out.steps.push(T2('Проверка: '+fr(ci.lam)+'·a = '+vtx(vmul(a,ci.lam))+' = b.','Тексеру: '+fr(ci.lam)+'·a = '+vtx(vmul(a,ci.lam))+' = b.'));
+   }else{
+    out.steps.push(T2('Отношения не равны (или не выполняется условие для нулевой координаты), поэтому b ≠ λ·a ни при каком λ: векторы не коллинеарны.','Қатынастар тең емес (немесе нөлдік координата үшін шарт орындалмайды), сондықтан ешбір λ үшін b ≠ λ·a: векторлар коллинеар емес.'));
+   }
+  }
+  out.pts=[a,b];
+  out.prims=[ln(vmul(a,-1),vmul(a,1.4),{c:'faint',d:1,w:1.2}),vArr(O,a,'a','a',[-14,-6]),vArr(O,b,ci.ok?'accent':'b','b',[16,-8],3.2)];
+  return out;
+ }
+ if(kind==='unk'){
+  var u=V.u,w=V.w,m=null,any=false,none=false,lam=null,Dn;
+  if(isZ(a)){any=true;}
+  else if(Math.abs(a[0])>1e-12){lam=u/a[0];if(!eqn(w,lam*a[1]))none=true;else m=lam*a[2];}
+  else if(Math.abs(a[1])>1e-12){if(Math.abs(u)>1e-12)none=true;else{lam=w/a[1];m=lam*a[2];}}
+  else{if(Math.abs(u)>1e-12||Math.abs(w)>1e-12)none=true;else any=true;}
+  var bt=T2('b('+fmtN(u,3)+'; '+fmtN(w,3)+'; m)','b('+fmtN(u,3)+'; '+fmtN(w,3)+'; m)');
+  out.steps=[T2('Векторы a и b коллинеарны, если b = λ·a, то есть x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.','a және b векторлары b = λ·a болғанда коллинеар, яғни x₂ / x₁ = y₂ / y₁ = z₂ / z₁ = λ.')];
+  if(any){
+   out.res=[{k:T2('Значение m','m мәні'),v:T2('любое число','кез келген сан'),main:1}];
+   out.steps.push(T2('Вектор a — нулевой, либо у a только z ≠ 0 и b = (0; 0; m): векторы коллинеарны при любом m.','a — нөлдік вектор немесе a векторының тек z координатасы нөлге тең емес және b = (0; 0; m): векторлар кез келген m үшін коллинеар.'));
+   out.pts=[a];out.prims=[vArr([0,0,0],a,'a','a',[-14,-6])];
+  }else if(none){
+   out.res=[{k:T2('Значение m','m мәні'),v:T2('такого m не существует','мұндай m жоқ'),main:1}];
+   out.steps.push(T2('Первые две координаты вектора b не пропорциональны первым двум координатам вектора a, поэтому ни при каком m векторы не коллинеарны.','b векторының алғашқы екі координатасы a векторының алғашқы екі координатасына пропорционал емес, сондықтан ешбір m үшін векторлар коллинеар емес.'));
+   out.pts=[a];out.prims=[vArr([0,0,0],a,'a','a',[-14,-6])];
+  }else{
+   var bb=[u,w,m],ci2=colInfo(a,bb);
+   out.res=[{k:T2('Значение m','m мәні'),v:'m = '+fr(m),main:1},{k:T2('Число λ (b = λ·a)','λ саны (b = λ·a)'),v:fr(lam)},{k:T2('Вектор b','b векторы'),v:'b'+vtx(bb)}];
+   var first=Math.abs(a[0])>1e-12?'x':'y';
+   out.steps.push(T2('Из первой пары координат: λ = '+(first==='x'?pn(u)+' / '+pn(a[0]):pn(w)+' / '+pn(a[1]))+' = '+fr(lam)+'.','Алғашқы координаталар жұбынан: λ = '+(first==='x'?pn(u)+' / '+pn(a[0]):pn(w)+' / '+pn(a[1]))+' = '+fr(lam)+'.'));
+   out.steps.push(T2('Вторая координата подтверждает: '+pn(a[1])+' · '+pf(lam)+' = '+fmtN(lam*a[1],3)+' = '+fmtN(w,3)+'.','Екінші координата растайды: '+pn(a[1])+' · '+pf(lam)+' = '+fmtN(lam*a[1],3)+' = '+fmtN(w,3)+'.'));
+   out.steps.push(T2('Тогда m = λ · z₁ = '+pf(lam)+' · '+pn(a[2])+' = '+fr(m)+'.','Сонда m = λ · z₁ = '+pf(lam)+' · '+pn(a[2])+' = '+fr(m)+'.'));
+   out.steps.push(T2('Ответ: m = '+fr(m)+', b'+vtx(bb)+' = '+fr(lam)+'·a.','Жауабы: m = '+fr(m)+', b'+vtx(bb)+' = '+fr(lam)+'·a.'));
+   out.pts=[a,bb];
+   out.prims=[ln(vmul(a,-1),vmul(a,1.4),{c:'faint',d:1,w:1.2}),vArr([0,0,0],a,'a','a',[-14,-6]),vArr([0,0,0],bb,'accent','b',[16,-8],3.2)];
+  }
+  return out;
+ }
+ if(kind==='col3p'){
+  var AB=vsub(b,a),AC=vsub(c3,a),ci3;
+  if(isZ(AB)&&isZ(AC)){ci3={ok:true,lam:0,zero:'ab'};}
+  else if(isZ(AB)){ci3={ok:true,zero:'ab',lam:0};}
+  else ci3=colInfo(AB,AC);
+  out.res=[{k:T2('Точки A, B, C на одной прямой?','A, B, C нүктелері бір түзуде жата ма?'),v:ci3.ok?YES:NO,main:1},{k:T2('Вектор AB','AB векторы'),v:'AB'+cs(AB)},{k:T2('Вектор AC','AC векторы'),v:'AC'+cs(AC)}];
+  out.steps=[T2('Точки A, B, C лежат на одной прямой тогда и только тогда, когда векторы AB и AC коллинеарны (AC = λ·AB).','A, B, C нүктелері бір түзуде жатуы үшін AB және AC векторлары коллинеар (AC = λ·AB) болуы қажет және жеткілікті.'),
+   T2('AB = ('+[0,1,2].map(function(k){return pn(b[k])+' − '+pn(a[k]);}).join('; ')+') = '+cs(AB)+',  AC = ('+[0,1,2].map(function(k){return pn(c3[k])+' − '+pn(a[k]);}).join('; ')+') = '+cs(AC)+'.','AB = ('+[0,1,2].map(function(k){return pn(b[k])+' − '+pn(a[k]);}).join('; ')+') = '+cs(AB)+',  AC = ('+[0,1,2].map(function(k){return pn(c3[k])+' − '+pn(a[k]);}).join('; ')+') = '+cs(AC)+'.')];
+  if(isZ(AB)){
+   out.steps.push(T2('Точки A и B совпадают, поэтому любые три точки A, B, C лежат на одной прямой.','A және B нүктелері беттеседі, сондықтан кез келген A, B, C нүктелері бір түзуде жатады.'));
+  }else if(ci3.ok){
+   var lm=ci3.lam;
+   out.res.push({k:T2('Число λ (AC = λ·AB)','λ саны (AC = λ·AB)'),v:fr(lm)});
+   var pos=Math.abs(lm)<1e-12?T2('C совпадает с A','C нүктесі A нүктесімен беттеседі'):(eqn(lm,1)?T2('C совпадает с B','C нүктесі B нүктесімен беттеседі'):(lm>0&&lm<1?T2('C лежит между A и B','C нүктесі A мен B арасында жатады'):(lm>1?T2('B лежит между A и C','B нүктесі A мен C арасында жатады'):T2('A лежит между C и B','A нүктесі C мен B арасында жатады'))));
+   out.res.push({k:T2('Расположение','Орналасуы'),v:pos});
+   out.steps.push(T2('Отношения координат: '+ratioLines(AB,AC)+'.','Координаталардың қатынасы: '+ratioLines(AB,AC)+'.'));
+   out.steps.push(T2('Все отношения равны '+fr(lm)+': AC = '+fr(lm)+'·AB, значит, точки лежат на одной прямой; '+pos.ru+'.','Барлық қатынастар '+fr(lm)+'-ге тең: AC = '+fr(lm)+'·AB, демек нүктелер бір түзуде жатады; '+pos.kk+'.'));
+  }else{
+   out.steps.push(T2('Отношения координат: '+ratioLines(AB,AC)+'. Они не равны, поэтому AC ≠ λ·AB, и точки не лежат на одной прямой.','Координаталардың қатынасы: '+ratioLines(AB,AC)+'. Олар тең емес, сондықтан AC ≠ λ·AB және нүктелер бір түзуде жатпайды.'));
+  }
+  out.pts=[a,b,c3];
+  out.prims=[ln(a,b,{c:'a',w:2.8,arrow:1}),ln(a,c3,{c:ci3.ok?'accent':'b',w:2.8,arrow:1}),P(a,'A',[-14,-8]),P(b,'B',[12,-10]),P(c3,'C',[14,-8])];
+  return out;
+ }
+ if(kind==='par4'){
+  var ab=vsub(b,a),cd=vsub(d4,c3),ac=vsub(c3,a);
+  if(isZ(ab)||isZ(cd))return bad('Точки A и B (или C и D) совпадают: прямая не определена.','A және B (немесе C және D) нүктелері беттеседі: түзу анықталмайды.');
+  var cp=colInfo(ab,cd),same=false;
+  if(cp.ok)same=colInfo(ab,ac).ok;
+  out.res=[{k:T2('Векторы AB и CD коллинеарны?','AB және CD векторлары коллинеар ма?'),v:cp.ok?YES:NO,main:1},{k:T2('Вектор AB','AB векторы'),v:'AB'+cs(ab)},{k:T2('Вектор CD','CD векторы'),v:'CD'+cs(cd)}];
+  out.steps=[T2('Прямые AB и CD параллельны (или совпадают) тогда и только тогда, когда векторы AB и CD коллинеарны.','AB және CD түзулері параллель (немесе беттесетін) болуы үшін AB және CD векторлары коллинеар болуы қажет және жеткілікті.'),
+   T2('AB = '+cs(ab)+',  CD = '+cs(cd)+'.','AB = '+cs(ab)+',  CD = '+cs(cd)+'.'),
+   T2('Отношения координат: '+ratioLines(ab,cd)+'.','Координаталардың қатынасы: '+ratioLines(ab,cd)+'.')];
+  if(cp.ok){
+   out.res.push({k:T2('Число λ (CD = λ·AB)','λ саны (CD = λ·AB)'),v:fr(cp.lam)});
+   out.steps.push(T2('Все отношения равны '+fr(cp.lam)+': CD = '+fr(cp.lam)+'·AB, векторы коллинеарны.','Барлық қатынастар '+fr(cp.lam)+'-ге тең: CD = '+fr(cp.lam)+'·AB, векторлар коллинеар.'));
+   out.steps.push(same?T2('Точка C лежит на прямой AB (AC = '+cs(ac)+' коллинеарен AB), поэтому прямые совпадают.','C нүктесі AB түзуінде жатыр (AC = '+cs(ac)+' векторы AB векторына коллинеар), сондықтан түзулер беттеседі.'):T2('Точка C не лежит на прямой AB (AC = '+cs(ac)+' не коллинеарен AB), поэтому прямые AB и CD параллельны и не совпадают.','C нүктесі AB түзуінде жатпайды (AC = '+cs(ac)+' векторы AB векторына коллинеар емес), сондықтан AB және CD түзулері параллель және беттеспейді.'));
+   out.res.push({k:T2('Вывод','Қорытынды'),v:same?T2('прямые совпадают','түзулер беттеседі'):T2('прямые параллельны','түзулер параллель')});
+  }else{
+   out.steps.push(T2('Отношения не равны, векторы AB и CD не коллинеарны: прямые AB и CD не параллельны.','Қатынастар тең емес, AB және CD векторлары коллинеар емес: AB және CD түзулері параллель емес.'));
+   out.res.push({k:T2('Вывод','Қорытынды'),v:T2('прямые не параллельны','түзулер параллель емес')});
+  }
+  out.pts=[a,b,c3,d4];
+  out.prims=[ln(a,b,{c:'a',w:2.8,arrow:1}),ln(c3,d4,{c:cp.ok?'accent':'b',w:2.8,arrow:1}),P(a,'A',[-14,-8]),P(b,'B',[12,-10]),P(c3,'C',[-14,8]),P(d4,'D',[12,-10])];
+  return out;
+ }
+ if(kind==='cop3'||kind==='cop4p'){
+  var va,vb,vc,nm;
+  if(kind==='cop3'){va=a;vb=b;vc=c3;nm=['a','b','c'];}
+  else{va=vsub(b,a);vb=vsub(c3,a);vc=vsub(d4,a);nm=['AB','AC','AD'];}
+  var f=copInfo(va,vb,vc),o0=kind==='cop3'?[0,0,0]:a;
+  out.res=[{k:kind==='cop3'?T2('Векторы a, b, c компланарны?','a, b, c векторлары компланар ма?'):T2('Точки A, B, C, D лежат в одной плоскости?','A, B, C, D нүктелері бір жазықтықта жата ма?'),v:f.ok?YES:NO,main:1}];
+  if(kind==='cop4p'){
+   out.res.push({k:T2('Векторы AB, AC, AD','AB, AC, AD векторлары'),v:'AB'+cs(va)+';  AC'+cs(vb)+';  AD'+cs(vc)});
+   out.steps=[T2('Точки A, B, C, D лежат в одной плоскости тогда и только тогда, когда векторы AB, AC, AD компланарны.','A, B, C, D нүктелері бір жазықтықта жатуы үшін AB, AC, AD векторлары компланар болуы қажет және жеткілікті.'),
+    T2('AB = '+cs(va)+',  AC = '+cs(vb)+',  AD = '+cs(vc)+'.','AB = '+cs(va)+',  AC = '+cs(vb)+',  AD = '+cs(vc)+'.')];
+  }else{
+   out.steps=[T2('Векторы a, b, c компланарны, если один из них раскладывается по двум другим, например c = x·a + y·b.','a, b, c векторлары, егер олардың бірі қалған екеуі арқылы жіктелсе, мысалы c = x·a + y·b, компланар.')];
+  }
+  var N1=nm[0],N2=nm[1],N3=nm[2];
+  if(f.why==='zero'){
+   out.steps.push(T2('Один из векторов нулевой, поэтому три вектора компланарны.','Векторлардың бірі нөлдік, сондықтан үш вектор компланар.'));
+  }else if(f.why==='col'){
+   out.steps.push(T2('Два из векторов коллинеарны (их координаты пропорциональны), а любые два вектора и третий компланарны, поэтому три вектора компланарны.','Векторлардың екеуі коллинеар (координаталары пропорционал), ал екі вектор мен үшінші вектор әрқашан компланар, сондықтан үш вектор компланар.'));
+  }else{
+   var iu=f.used,xs=[XN[iu[0]],XN[iu[1]],XN[iu[2]]];
+   out.steps.push(T2('Векторы '+N1+' и '+N2+' не коллинеарны. Ищем разложение '+N3+' = x·'+N1+' + y·'+N2+'. Система: '+sysLines(va,vb,vc)+'.',N1+' және '+N2+' векторлары коллинеар емес. '+N3+' = x·'+N1+' + y·'+N2+' жіктелуін іздейміз. Жүйе: '+sysLines(va,vb,vc)+'.'));
+   out.steps.push(T2('Из уравнений для координат '+xs[0]+' и '+xs[1]+' находим x = '+fr(f.x)+', y = '+fr(f.y)+'.',xs[0]+' және '+xs[1]+' координаталарының теңдеулерінен x = '+fr(f.x)+', y = '+fr(f.y)+' табамыз.'));
+   var chk=f.x*va[iu[2]]+f.y*vb[iu[2]];
+   out.steps.push(T2('Проверяем третье уравнение (координата '+xs[2]+'): x·'+pn(va[iu[2]])+' + y·'+pn(vb[iu[2]])+' = '+fr(chk)+', а нужно '+fmtN(vc[iu[2]],3)+'. '+(f.ok?'Верно.':'Не выполняется.'),'Үшінші теңдеуді ("'+xs[2]+'" координатасы) тексереміз: x·'+pn(va[iu[2]])+' + y·'+pn(vb[iu[2]])+' = '+fr(chk)+', ал керегі '+fmtN(vc[iu[2]],3)+'. '+(f.ok?'Дұрыс.':'Орындалмайды.')));
+   if(f.ok){
+    out.res.push({k:T2('Разложение '+N3,N3+' жіктелуі'),v:N3+' = '+lc([f.x,f.y],[N1,N2])});
+    out.steps.push(T2('Система совместна: '+N3+' = '+lc([f.x,f.y],[N1,N2])+', векторы компланарны.','Жүйе үйлесімді: '+N3+' = '+lc([f.x,f.y],[N1,N2])+', векторлар компланар.'));
+   }else out.steps.push(T2('Система несовместна, '+N3+' не раскладывается по '+N1+' и '+N2+': векторы некомпланарны.','Жүйе үйлесімсіз, '+N3+' векторы '+N1+' және '+N2+' арқылы жіктелмейді: векторлар компланар емес.'));
+  }
+  out.res.push({k:T2('Проверка определителем Δ','Анықтауышпен тексеру Δ'),v:Math.abs(f.D)<1e-9?'Δ = 0':'Δ = '+fmtN(f.D,3)+' ≠ 0'});
+  out.steps.push(T2('Проверка: определитель из координат векторов Δ = '+fmtN(f.D,3)+(Math.abs(f.D)<1e-9?' = 0, векторы компланарны.':' ≠ 0, векторы некомпланарны.'),'Тексеру: векторлардың координаталарынан құралған анықтауыш Δ = '+fmtN(f.D,3)+(Math.abs(f.D)<1e-9?' = 0, векторлар компланар.':' ≠ 0, векторлар компланар емес.')));
+  var col2=f.ok?'accent':'c';
+  if(kind==='cop3'){
+   out.pts=[va,vb,vc];
+   out.prims=[];
+   if(!isZ(vcross(va,vb)))out.prims.push(pl([vadd(vmul(va,-.5),vmul(vb,-.5)),vadd(vmul(va,1.2),vmul(vb,-.5)),vadd(vmul(va,1.2),vmul(vb,1.2)),vadd(vmul(va,-.5),vmul(vb,1.2))],'a','',2));
+   out.prims=out.prims.concat([vArr([0,0,0],va,'a','a',[-14,-6],2.6),vArr([0,0,0],vb,'b','b',[-12,-8],2.6),vArr([0,0,0],vc,col2,'c',[14,-8],3.2)]);
+  }else{
+   out.pts=[a,b,c3,d4];
+   out.prims=[];
+   if(!isZ(vcross(va,vb)))out.prims.push(pl([vadd(a,vadd(vmul(va,-.3),vmul(vb,-.3))),vadd(a,vadd(vmul(va,1.3),vmul(vb,-.3))),vadd(a,vadd(vmul(va,1.3),vmul(vb,1.3))),vadd(a,vadd(vmul(va,-.3),vmul(vb,1.3)))],'a','',2));
+   out.prims=out.prims.concat([vArr(a,b,'a','',null,2.4),vArr(a,c3,'b','',null,2.4),vArr(a,d4,col2,'',null,3.2),P(a,'A',[-14,-8]),P(b,'B',[12,-10]),P(c3,'C',[-14,8]),P(d4,'D',[12,-10])]);
+  }
+  return out;
+ }
+ if(kind==='dec3'){
+  var Dl=det3(a,b,c3);
+  if(Math.abs(Dl)<1e-9)return bad('Векторы a, b, c компланарны (Δ = 0): по ним нельзя разложить произвольный вектор единственным образом. Выберите некомпланарные векторы.','a, b, c векторлары компланар (Δ = 0): олар бойынша кез келген векторды жалғыз тәсілмен жіктеуге болмайды. Компланар емес векторларды таңдаңыз.');
+  var X=det3(d4,b,c3)/Dl,Y=det3(a,d4,c3)/Dl,Z=det3(a,b,d4)/Dl,chk3=vadd(vmul(a,X),vadd(vmul(b,Y),vmul(c3,Z)));
+  out.res=[{k:T2('Разложение d','d жіктелуі'),v:'d = '+lc([X,Y,Z],['a','b','c']),main:1},{k:T2('Коэффициенты x, y, z','x, y, z коэффициенттері'),v:fr(X)+';  '+fr(Y)+';  '+fr(Z)},{k:T2('Определитель Δ','Δ анықтауышы'),v:fmtN(Dl,3)}];
+  out.steps=[T2('Ищем числа x, y, z, при которых d = x·a + y·b + z·c. Если a, b, c некомпланарны, они существуют и единственны (Δ ≠ 0).','d = x·a + y·b + z·c болатын x, y, z сандарын іздейміз. a, b, c компланар емес болса (Δ ≠ 0), олар бар және жалғыз.'),
+   T2('Записываем систему по координатам: '+[0,1,2].map(function(k){return 'x·'+pn(a[k])+' + y·'+pn(b[k])+' + z·'+pn(c3[k])+' = '+fmtN(d4[k],3);}).join(';  ')+'.','Координаталар бойынша жүйені жазамыз: '+[0,1,2].map(function(k){return 'x·'+pn(a[k])+' + y·'+pn(b[k])+' + z·'+pn(c3[k])+' = '+fmtN(d4[k],3);}).join(';  ')+'.'),
+   T2('Определитель системы Δ = '+fmtN(Dl,3)+' ≠ 0, значит, векторы a, b, c некомпланарны и решение единственно.','Жүйенің анықтауышы Δ = '+fmtN(Dl,3)+' ≠ 0, демек a, b, c векторлары компланар емес және шешімі жалғыз.'),
+   T2('Решая систему (например, по формулам Крамера), получаем x = '+fr(X)+', y = '+fr(Y)+', z = '+fr(Z)+'.','Жүйені шешіп (мысалы, Крамер формулалары бойынша), x = '+fr(X)+', y = '+fr(Y)+', z = '+fr(Z)+' аламыз.'),
+   T2('Проверка: '+lc([X,Y,Z],['a','b','c'])+' = '+vtx(chk3)+' = d.','Тексеру: '+lc([X,Y,Z],['a','b','c'])+' = '+vtx(chk3)+' = d.'),
+   T2('Ответ: d = '+lc([X,Y,Z],['a','b','c'])+'.','Жауабы: d = '+lc([X,Y,Z],['a','b','c'])+'.')];
+  var xa=vmul(a,X),yb=vmul(b,Y);
+  out.pts=[a,b,c3,d4,xa,vadd(xa,yb)];
+  out.prims=[vArr([0,0,0],a,'a','a',[-14,-6],2.2),vArr([0,0,0],b,'b','b',[-12,-8],2.2),vArr([0,0,0],c3,'c','c',[-14,-4],2.2),
+   ln([0,0,0],xa,{c:'a',w:3}),ln(xa,vadd(xa,yb),{c:'b',w:3}),ln(vadd(xa,yb),d4,{c:'c',w:3}),vArr([0,0,0],d4,'accent','d',[14,-8],3.4),P(d4,'D',[12,-10])];
+  return out;
+ }
+ return bad('Неизвестная задача.','Белгісіз есеп.');
+}
+
+var CVK=['D','C','B','A','D1','C1','B1','A1'],CVN=['D','C','B','A','D₁','C₁','B₁','A₁'];
+function vname(k){return CVN[CVK.indexOf(k)];}
+function boxV(k,p,q,r){return {A:[0,q,0],B:[p,q,0],C:[p,0,0],D:[0,0,0],A1:[0,q,r],B1:[p,q,r],C1:[p,0,r],D1:[0,0,r]}[k];}
+
+/* scene: display coords -> render coords with automatic scale */
+function cScene(out){
+ var m=1,i;
+ out.pts.forEach(function(p){p.forEach(function(c){m=Math.max(m,Math.abs(c));});});
+ var s=1.2/(m+.2),Lp=Math.min(1.45,(m+.8)*s),Ln=Math.min(.9,(m*.5+.5)*s);
+ var map=function(X){return [X[0]*s,X[2]*s,X[1]*s];};
+ if(out.box){
+  var b=out.box,mx=Math.max(b.p,b.q,b.r),sb=.8/mx,P=boxPolyD(b.p,b.q,b.r,sb);
+  P.ov=axes3((mx+1)*sb*1.1,.5*sb*mx+.3,{noO:1}).concat([ln(map2(b.P,sb),map2(b.Q,sb),{c:'accent',w:3.2,arrow:1})]);
+  return [P];
+ }
+ function map2(X,k){return [X[0]*k,X[2]*k,X[1]*k];}
+ var pr=out.prims.map(function(p){
+  var q={},k;for(k in p)q[k]=p[k];
+  if(p.k==='line'){q.a=map(p.a);q.b=map(p.b);}
+  else if(p.k==='plane'){q.pts=p.pts.map(map);}
+  else if(p.k==='pt'){q.p=map(p.p);}
+  else if(p.k==='ang'){var uu=vunit([p.u[0],p.u[2],p.u[1]]),ww=vunit([p.w[0],p.w[2],p.w[1]]);q.o=map(p.o);q.u=uu;q.w=ww;q.r=Math.min(.3,.35*Math.min(vlen(map(out.pts[0])),vlen(map(out.pts[1])))||.3);}
+  return q;
+ });
+ return axes3(Lp,Ln).concat(pr);
+}
+
+/* ---------- reference data ---------- */
+var GROUPS=[
+ {id:'col',ru:'Коллинеарность',kk:'Коллинеарлық'},
+ {id:'cop',ru:'Компланарность',kk:'Компланарлық'},
+ {id:'dec',ru:'Разложение вектора',kk:'Векторды жіктеу'},
+ {id:'term',ru:'Термины',kk:'Терминдер'}
+];
+var REF=[
+ {g:'col',s:'a ∥ b',ru:'Векторы a и b коллинеарны: лежат на одной прямой или на параллельных прямых.',kk:'a және b векторлары коллинеар: бір түзуде немесе параллель түзулерде жатады.',src:'11.3'},
+ {g:'col',s:'b = λ·a  (a ≠ 0)',ru:'Признак коллинеарности: вектор b коллинеарен ненулевому вектору a тогда и только тогда, когда b = λ·a.',kk:'Коллинеарлық белгісі: b векторы нөлдік емес a векторына коллинеар болуы үшін b = λ·a болуы қажет және жеткілікті.',src:'11.3'},
+ {g:'col',s:'a ↑↑ b  (λ > 0)',ru:'Коллинеарные векторы сонаправлены, если λ > 0.',kk:'λ > 0 болса, коллинеар векторлар бағыттас.',src:'11.3'},
+ {g:'col',s:'a ↑↓ b  (λ < 0)',ru:'Коллинеарные векторы противоположно направлены, если λ < 0.',kk:'λ < 0 болса, коллинеар векторлар қарама-қарсы бағытталған.',src:'11.3'},
+ {g:'col',s:'|b| = |λ|·|a|',ru:'Длина вектора λ·a равна |λ|·|a|.',kk:'λ·a векторының ұзындығы |λ|·|a| тең.',src:'11.3'},
+ {g:'col',s:'x₂/x₁ = y₂/y₁ = z₂/z₁ = λ',ru:'Условие коллинеарности векторов a(x₁; y₁; z₁) и b(x₂; y₂; z₂) в координатах (если x₁, y₁, z₁ ≠ 0).',kk:'a(x₁; y₁; z₁) және b(x₂; y₂; z₂) векторларының коллинеарлық шарты координаталарда (x₁, y₁, z₁ ≠ 0 болса).',src:'11.3'},
+ {g:'col',s:'x₂ = λx₁, y₂ = λy₁, z₂ = λz₁',ru:'То же условие без деления: годится и при нулевых координатах.',kk:'Сол шарт бөлусіз: координаталары нөл болғанда да жарайды.',src:'11.3'},
+ {g:'col',s:'0 ∥ a',ru:'Нулевой вектор коллинеарен любому вектору.',kk:'Нөлдік вектор кез келген векторға коллинеар.',src:'11.3'},
+ {g:'col',s:'AC = λ·AB',ru:'Точки A, B, C лежат на одной прямой тогда и только тогда, когда AC = λ·AB.',kk:'A, B, C нүктелері бір түзуде жатуы үшін AC = λ·AB болуы қажет және жеткілікті.',src:'11.3'},
+ {g:'col',s:'AB ∥ CD',ru:'Прямые AB и CD параллельны или совпадают, если векторы AB и CD коллинеарны.',kk:'AB және CD векторлары коллинеар болса, AB және CD түзулері параллель немесе беттеседі.',src:'11.3'},
+ {g:'col',s:'0 < λ < 1',ru:'Если AC = λ·AB и 0 < λ < 1, то точка C лежит между A и B.',kk:'AC = λ·AB және 0 < λ < 1 болса, C нүктесі A мен B арасында жатады.',src:'11.3'},
+ {g:'cop',s:'a, b, c компланарны',ru:'Векторы компланарны, если при откладывании от одной точки они лежат в одной плоскости.',kk:'Бір нүктеден салғанда векторлар бір жазықтықта жатса, олар компланар.',src:'11.3'},
+ {g:'cop',s:'c = x·a + y·b',ru:'Признак компланарности: если c раскладывается по a и b, то векторы a, b, c компланарны.',kk:'Компланарлық белгісі: c векторы a және b арқылы жіктелсе, a, b, c векторлары компланар.',src:'11.3'},
+ {g:'cop',s:'a ∦ b ⇒ c = x·a + y·b',ru:'Если a и b не коллинеарны, а a, b, c компланарны, то разложение c по a и b существует и единственно.',kk:'a және b коллинеар емес, ал a, b, c компланар болса, c векторының a және b бойынша жіктелуі бар және жалғыз.',src:'11.3'},
+ {g:'cop',s:'Δ = 0',ru:'Определитель из координат трёх векторов равен нулю тогда и только тогда, когда они компланарны.',kk:'Үш вектордың координаталарынан құралған анықтауыш нөлге тең болғанда ғана олар компланар.',src:'11.3'},
+ {g:'cop',s:'AD = x·AB + y·AC',ru:'Точки A, B, C, D лежат в одной плоскости, если AD раскладывается по AB и AC.',kk:'AD векторы AB және AC арқылы жіктелсе, A, B, C, D нүктелері бір жазықтықта жатады.',src:'11.3'},
+ {g:'cop',s:'a(x₁; y₁; z₁), b(x₂; y₂; z₂), c(x₃; y₃; z₃)',ru:'Система для проверки: x₃ = x·x₁ + y·x₂, y₃ = x·y₁ + y·y₂, z₃ = x·z₁ + y·z₂.',kk:'Тексеру жүйесі: x₃ = x·x₁ + y·x₂, y₃ = x·y₁ + y·y₂, z₃ = x·z₁ + y·z₂.',src:'11.3'},
+ {g:'cop',s:'два вектора',ru:'Любые два вектора компланарны.',kk:'Кез келген екі вектор компланар.',src:'11.3'},
+ {g:'cop',s:'a ∥ b ⇒ a, b, c компланарны',ru:'Если два из трёх векторов коллинеарны, то три вектора компланарны.',kk:'Үш вектордың екеуі коллинеар болса, үш вектор компланар.',src:'11.3'},
+ {g:'dec',s:'OD = a + b + c',ru:'Правило параллелепипеда: сумма трёх некомпланарных векторов равна диагонали параллелепипеда.',kk:'Параллелепипед ережесі: үш компланар емес вектордың қосындысы параллелепипед диагоналіне тең.',src:'11.3'},
+ {g:'dec',s:'d = x·a + y·b + z·c',ru:'Разложение вектора d по трём некомпланарным векторам a, b, c.',kk:'d векторын компланар емес үш a, b, c векторы бойынша жіктеу.',src:'11.3'},
+ {g:'dec',s:'(x; y; z)',ru:'Числа x, y, z — коэффициенты разложения; они определяются единственным образом.',kk:'x, y, z сандары — жіктеу коэффициенттері; олар бір мәнді анықталады.',src:'11.3'},
+ {g:'dec',s:'d = x·i + y·j + z·k',ru:'Разложение вектора d(x; y; z) по координатным векторам.',kk:'d(x; y; z) векторын координаталық векторлар бойынша жіктеу.',src:'11.3'},
+ {g:'dec',s:'Δ = a·(b × c) ≠ 0',ru:'Векторы a, b, c некомпланарны, если определитель из их координат не равен нулю.',kk:'Координаталарынан құралған анықтауыш нөлге тең болмаса, a, b, c векторлары компланар емес.',src:'11.3'},
+ {g:'dec',s:'Δ ≠ 0 ⇒ единственное решение',ru:'При Δ ≠ 0 система для x, y, z имеет единственное решение.',kk:'Δ ≠ 0 болғанда x, y, z үшін жүйенің жалғыз шешімі бар.',src:'11.3'}
+];
+var TERMS=[
+ ['коллинеарные векторы','коллинеар векторлар','11.3'],
+ ['компланарные векторы','компланар векторлар','11.3'],
+ ['сонаправленные векторы','бағыттас векторлар','11.3'],
+ ['противоположно направленные векторы','қарама-қарсы бағытталған векторлар','11.3'],
+ ['нулевой вектор','нөлдік вектор','11.3'],
+ ['разложение вектора','векторды жіктеу','11.3'],
+ ['коэффициенты разложения','жіктеу коэффициенттері','11.3'],
+ ['правило параллелепипеда','параллелепипед ережесі','11.3'],
+ ['определитель','анықтауыш','11.3'],
+ ['система уравнений','теңдеулер жүйесі','11.3'],
+ ['базис пространства','кеңістіктің базисі','11.3'],
+ ['параллельные прямые','параллель түзулер','11.3']
+];
+TERMS.forEach(function(t){REF.push({g:'term',t:1,ru:t[0],kk:t[1],src:t[2]});});
+
+/* ---------- quiz ---------- */
+function Q(qru,qkk,o,wru,wkk,okk){return {q:{ru:qru,kk:qkk},o:{ru:o,kk:okk||o},a:0,w:{ru:wru,kk:wkk}};}
+var QUIZ=[
+ Q('Векторы a(1; 2; 3) и b(2; 4; 6) коллинеарны. Чему равно λ в равенстве b = λ·a?','a(1; 2; 3) және b(2; 4; 6) векторлары коллинеар. b = λ·a теңдігіндегі λ неге тең?',['2','½','−2','6'],'2/1 = 4/2 = 6/3 = 2, значит, b = 2·a.','2/1 = 4/2 = 6/3 = 2, демек b = 2·a.'),
+ Q('Какой из векторов коллинеарен вектору a(1; −2; 3)?','Төмендегі векторлардың қайсысы a(1; −2; 3) векторына коллинеар?',['(−2; 4; −6)','(2; 4; 6)','(1; 2; 3)','(−1; −2; 3)'],'(−2; 4; −6) = −2·a: координаты пропорциональны.','(−2; 4; −6) = −2·a: координаталары пропорционал.'),
+ Q('При каком m векторы a(2; 4; 6) и b(1; 2; m) коллинеарны?','m-нің қандай мәнінде a(2; 4; 6) және b(1; 2; m) векторлары коллинеар?',['3','12','2','6'],'λ = 1/2, значит, m = ½·6 = 3.','λ = 1/2, демек m = ½·6 = 3.'),
+ Q('Векторы a и b = −3·a:','a және b = −3·a векторлары:',['коллинеарны и противоположно направлены','коллинеарны и сонаправлены','не коллинеарны','компланарны, но не коллинеарны'],'λ = −3 < 0, векторы коллинеарны и направлены противоположно.','λ = −3 < 0, векторлар коллинеар және қарама-қарсы бағытталған.',['коллинеар және қарама-қарсы бағытталған','коллинеар және бағыттас','коллинеар емес','компланар, бірақ коллинеар емес']),
+ Q('Точки A(0; 0; 0), B(1; 2; 3), C(2; 4; 6):','A(0; 0; 0), B(1; 2; 3), C(2; 4; 6) нүктелері:',['лежат на одной прямой','не лежат на одной прямой','образуют прямоугольный треугольник','образуют равносторонний треугольник'],'AC = 2·AB, значит, точки лежат на одной прямой, B — середина AC.','AC = 2·AB, демек нүктелер бір түзуде жатады, B — AC ортасы.',['бір түзуде жатады','бір түзуде жатпайды','тікбұрышты үшбұрыш құрайды','тең қабырғалы үшбұрыш құрайды']),
+ Q('Какие векторы всегда компланарны?','Қай векторлар әрқашан компланар?',['любые два вектора','любые три вектора','три вектора с общим началом','три ненулевых вектора'],'Через любые два вектора с общим началом проходит плоскость. Для трёх векторов это верно не всегда.','Ортақ бастауы бар кез келген екі вектор арқылы жазықтық жүргізуге болады. Үш вектор үшін бұл әрқашан орындалмайды.',['кез келген екі вектор','кез келген үш вектор','ортақ бастауы бар үш вектор','нөлдік емес үш вектор']),
+ Q('Если c = 2·a − 3·b, то векторы a, b, c:','Егер c = 2·a − 3·b болса, a, b, c векторлары:',['компланарны','некомпланарны','коллинеарны','сонаправлены'],'c раскладывается по a и b, значит, векторы компланарны.','c векторы a және b арқылы жіктеледі, демек векторлар компланар.',['компланар','компланар емес','коллинеар','бағыттас']),
+ Q('Векторы a(1; 0; 0), b(0; 1; 0), c(0; 0; 1):','a(1; 0; 0), b(0; 1; 0), c(0; 0; 1) векторлары:',['некомпланарны','компланарны','коллинеарны','сонаправлены'],'Координатные векторы i, j, k не лежат в одной плоскости.','i, j, k координаталық векторлары бір жазықтықта жатпайды.',['компланар емес','компланар','коллинеар','бағыттас']),
+ Q('Векторы a(1; 2; 3), b(2; 1; 0), c(3; 3; 3):','a(1; 2; 3), b(2; 1; 0), c(3; 3; 3) векторлары:',['компланарны','некомпланарны','коллинеарны','сонаправлены'],'c = a + b, значит, c раскладывается по a и b и векторы компланарны.','c = a + b, демек c векторы a және b арқылы жіктеледі және векторлар компланар.',['компланар','компланар емес','коллинеар','бағыттас']),
+ Q('Правило параллелепипеда: a + b + c равно:','Параллелепипед ережесі: a + b + c тең:',['диагонали параллелепипеда OD','ребру параллелепипеда','нулевому вектору','диагонали грани'],'Сумма трёх некомпланарных векторов, отложенных от одной точки, — диагональ параллелепипеда.','Бір нүктеден салынған үш компланар емес вектордың қосындысы — параллелепипед диагоналі.',['OD параллелепипед диагоналіне','параллелепипед қырына','нөлдік векторға','жақ диагоналіне']),
+ Q('Разложение d(5; 4; 3) по a(1; 1; 0), b(1; 0; 1), c(0; 1; 1):','d(5; 4; 3) векторын a(1; 1; 0), b(1; 0; 1), c(0; 1; 1) бойынша жіктеу:',['d = 3a + 2b + c','d = a + 2b + 3c','d = 2a + 3b + c','d = 3a + b + 2c'],'x + y = 5, x + z = 4, y + z = 3 даёт x = 3, y = 2, z = 1.','x + y = 5, x + z = 4, y + z = 3 жүйесінен x = 3, y = 2, z = 1.'),
+ Q('Четыре точки A, B, C, D лежат в одной плоскости, если:','A, B, C, D төрт нүкте бір жазықтықта жатады, егер:',['AD = x·AB + y·AC','AD = AB + AC + CD','AB = AC','AD ⊥ AB'],'Векторы AB, AC, AD должны быть компланарны, то есть AD раскладывается по AB и AC.','AB, AC, AD векторлары компланар болуы керек, яғни AD векторы AB және AC арқылы жіктеледі.')
+];
+QUIZ.forEach(function(q,i){
+ var k=(i*3+1)%4;if(!k)return;
+ ['ru','kk'].forEach(function(L){var o=q.o[L],n=[],j;for(j=0;j<4;j++)n[(j+k)%4]=o[j];q.o[L]=n;});
+ q.a=(q.a+k)%4;
+});
+
+/* ---------- state ---------- */
+/* ---------- state ---------- */
+var pref=LS.get('coord3.prefs')||{};
+var TABS=['col','cop','dec','sol','ref','qz'];
+var state={
+ lang:(pref.lang==='kk'||pref.lang==='ru')?pref.lang:'kk',
+ theme:(pref.theme==='dark'||pref.theme==='light')?pref.theme:((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'),
+ tab:(TABS.indexOf(pref.tab)>=0)?pref.tab:'col',
+ size:(pref.size===0||pref.size===1||pref.size===2)?pref.size:1,
+ views:{}, quiz:{i:0,sel:null,score:0,done:false}, ref:{q:'',g:'all'}
+};
+var UVALS=[1.08,1.36,1.7];
+function applySize(){
+ var u=UVALS[state.size],r=document.documentElement.style,t=T[state.lang];
+ r.setProperty('--u',u);r.setProperty('--k',1+(u-1)*.6);r.setProperty('--ul',1+(u-1)*.5);
+ $('#sizeSeg').setAttribute('aria-label',t.sizeGroup);
+ $$('#sizeSeg button').forEach(function(b){var i=+b.dataset.size;b.setAttribute('aria-pressed',String(i===state.size));b.setAttribute('aria-label',t.sizeNames[i]);b.title=t.sizeNames[i];});
+}
+function savePrefs(){LS.set('coord3.prefs',{lang:state.lang,theme:state.theme,tab:state.tab,size:state.size});}
+function view(id){
+ if(!state.views[id]){var it=ITEMS[id];state.views[id]={yaw:it.v0?it.v0.yaw:-.55,pitch:it.v0?it.v0.pitch:.5,mode:it.def,n:it.slider?it.slider.def:0};}
+ return state.views[id];
+}
+function tagOf(id){var t=ITEMS[id].tag;return typeof t==='string'?t:t[state.lang];}
+
+/* ---------- 3D rendering ---------- */
+var S=108,CX=210,CY=172;
+function proj(p,v){
+ var cy=Math.cos(v.yaw),sy=Math.sin(v.yaw),cp=Math.cos(v.pitch),sp=Math.sin(v.pitch);
+ var x1=p[0]*cy+p[2]*sy,z1=-p[0]*sy+p[2]*cy;
+ var y2=p[1]*cp-z1*sp,z2=p[1]*sp+z1*cp;
+ return {x:CX+x1*S,y:CY-y2*S,z:z2};
+}
+function f1(n){return n.toFixed(1);}
+function polySVG(p,v){
+ var cy=Math.cos(v.yaw),sy=Math.sin(v.yaw),cp=Math.cos(v.pitch),sp=Math.sin(v.pitch),i,R,c=[0,0,0];
+ R=p.V.map(function(q){var x1=q[0]*cy+q[2]*sy,z1=-q[0]*sy+q[2]*cy;return [x1,q[1]*cp-z1*sp,q[1]*sp+z1*cp];});
+ R.forEach(function(r){c[0]+=r[0];c[1]+=r[1];c[2]+=r[2];});
+ c=c.map(function(x){return x/R.length;});
+ var front=p.F.map(function(f){
+  var a=R[f[0]],b=R[f[1]],d=R[f[2]],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[d[0]-a[0],d[1]-a[1],d[2]-a[2]];
+  var n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],fc=[0,0,0];
+  f.forEach(function(k){fc[0]+=R[k][0];fc[1]+=R[k][1];fc[2]+=R[k][2];});
+  fc=fc.map(function(x){return x/f.length;});
+  if(n[0]*(fc[0]-c[0])+n[1]*(fc[1]-c[1])+n[2]*(fc[2]-c[2])<0)n=[-n[0],-n[1],-n[2]];
+  return n[2]>1e-6;
+ });
+ var sc=R.map(function(r){return {x:CX+r[0]*S,y:CY-r[1]*S};});
+ var edges={},vis=R.map(function(){return false;});
+ p.F.forEach(function(f,fi){
+  for(i=0;i<f.length;i++){
+   var a=f[i],b=f[(i+1)%f.length],k=a<b?a+'-'+b:b+'-'+a;
+   if(!edges[k])edges[k]={a:a,b:b,vis:false};
+   if(front[fi]){edges[k].vis=true;vis[a]=true;vis[b]=true;}
+  }
+ });
+ var hid='',shown='',fills='',labels='',k,e;
+ for(k in edges){
+  e=edges[k];
+  var seg='<line x1="'+f1(sc[e.a].x)+'" y1="'+f1(sc[e.a].y)+'" x2="'+f1(sc[e.b].x)+'" y2="'+f1(sc[e.b].y)+'"';
+  if(e.vis)shown+=seg+' class="ln ln-ink" stroke-width="2"/>';
+  else hid+=seg+' class="ln ln-faint" stroke-width="1.3" stroke-dasharray="5 5"/>';
+ }
+ p.F.forEach(function(f,fi){
+  if(front[fi])fills+='<polygon class="pl-f" points="'+f.map(function(q){return f1(sc[q].x)+','+f1(sc[q].y);}).join(' ')+'"/>';
+ });
+ var mx=0,my=0;sc.forEach(function(s){mx+=s.x;my+=s.y;});mx/=sc.length;my/=sc.length;
+ sc.forEach(function(s,idx){
+  var dx=s.x-mx,dy=s.y-my,d=Math.sqrt(dx*dx+dy*dy)||1;
+  labels+='<text class="lbl'+(vis[idx]?'':' lbl-h')+'" x="'+f1(Math.max(12,Math.min(408,s.x+dx/d*15)))+'" y="'+f1(Math.max(12,Math.min(288,s.y+dy/d*15)))+'">'+p.names[idx]+'</text>';
+  if(vis[idx])labels+='<circle class="pt" cx="'+f1(s.x)+'" cy="'+f1(s.y)+'" r="3.6"/>';
+ });
+ return hid+fills+shown+(p.ov?renderPrims(p.ov,v):'')+labels;
+}
+function clampX(x){return Math.max(14,Math.min(406,x));}
+function clampY(y){return Math.max(14,Math.min(286,y));}
+function renderPrims(prims,v){
+ var items=prims.map(function(p){
+  if(p.k==='plane'){var q=p.pts.map(function(x){return proj(x,v)});return {p:p,q:q,z:q.reduce(function(s,a){return s+a.z},0)/q.length};}
+  if(p.k==='line'){var a=proj(p.a,v),b=proj(p.b,v);return {p:p,a:a,b:b,z:(a.z+b.z)/2+.25};}
+  if(p.k==='ang'){var o=proj(p.o,v);return {p:p,q:o,z:o.z+.35};}
+  var r=proj(p.p,v);return {p:p,q:r,z:r.z+.5};
+ }).sort(function(x,y){return x.z-y.z});
+ var shapes='',labels='';
+ function P2(a){return a.map(function(q){return f1(q.x)+','+f1(q.y);}).join(' ');}
+ items.forEach(function(it){
+  var p=it.p;
+  if(p.k==='plane'){
+   shapes+='<polygon class="pl-'+p.col+'" points="'+P2(it.q)+'"/>';
+   if(p.lab){
+    var cx=0,cy=0;it.q.forEach(function(a){cx+=a.x;cy+=a.y});cx/=it.q.length;cy/=it.q.length;
+    var c=it.q[p.li],dx=c.x-cx,dy=c.y-cy,d=Math.sqrt(dx*dx+dy*dy)||1;
+    labels+='<text class="lbl lbl-pl lbl-'+p.col+'" x="'+f1(clampX(c.x+dx/d*15))+'" y="'+f1(clampY(c.y+dy/d*15))+'">'+p.lab+'</text>';
+   }
+  }else if(p.k==='line'){
+   shapes+='<line class="ln ln-'+p.c+'" x1="'+f1(it.a.x)+'" y1="'+f1(it.a.y)+'" x2="'+f1(it.b.x)+'" y2="'+f1(it.b.y)+'" stroke-width="'+p.w+'"'+(p.d?' stroke-dasharray="5 5"':'')+'/>';
+   if(p.arrow){
+    var adx=it.b.x-it.a.x,ady=it.b.y-it.a.y,adl=Math.sqrt(adx*adx+ady*ady);
+    if(adl>1.5){var aux=adx/adl,auy=ady/adl,ahl=Math.min(12*(typeof ARW==='number'?ARW:1),adl*.7),ahw=ahl*.4,bx=it.b.x,by=it.b.y;
+     shapes+='<polygon class="ah ah-'+p.c+'" points="'+f1(bx)+','+f1(by)+' '+f1(bx-aux*ahl-auy*ahw)+','+f1(by-auy*ahl+aux*ahw)+' '+f1(bx-aux*ahl+auy*ahw)+','+f1(by-auy*ahl-aux*ahw)+'"/>';}
+   }
+   if(p.lab){
+    var lt=p.lt||.5,e=p.le==='a'?it.a:(p.le==='m'?{x:it.a.x+(it.b.x-it.a.x)*lt,y:it.a.y+(it.b.y-it.a.y)*lt}:it.b);
+    labels+='<text class="lbl lbl-ln" x="'+f1(clampX(e.x+p.lo[0]))+'" y="'+f1(clampY(e.y+p.lo[1]))+'">'+p.lab+'</text>';
+   }
+  }else if(p.k==='ang'){
+   var cs=[],th=Math.acos(Math.max(-1,Math.min(1,vdot(p.u,p.w)))),i,N=14,t,d2,ok=true;
+   if(p.sq){
+    var pa=vadd(p.o,vmul(p.u,p.r)),pb=vadd(pa,vmul(p.w,p.r)),pc=vadd(p.o,vmul(p.w,p.r));
+    var qs=[p.o,pa,pb,pc].map(function(x){return proj(x,v);});
+    shapes+='<polygon class="ang-f" points="'+P2(qs)+'"/><polyline class="ang-s" points="'+P2(qs.slice(1))+'"/>';
+   }else if(th>1e-3&&th<Math.PI-1e-3){
+    for(i=0;i<=N;i++){t=i/N;d2=vadd(vmul(p.u,Math.sin((1-t)*th)/Math.sin(th)),vmul(p.w,Math.sin(t*th)/Math.sin(th)));cs.push(proj(vadd(p.o,vmul(d2,p.r)),v));}
+    shapes+='<polygon class="ang-f" points="'+f1(it.q.x)+','+f1(it.q.y)+' '+P2(cs)+'"/><polyline class="ang-s" points="'+P2(cs)+'"/>';
+   }else ok=false;
+   if(p.lab&&ok){
+    var bs=vadd(p.u,p.w);
+    if(vlen(bs)>1e-3){var lp=proj(vadd(p.o,vmul(vunit(bs),p.r*(p.sq?2.3:1.55))),v);
+     labels+='<text class="lbl lbl-ang lbl-b" x="'+f1(clampX(lp.x))+'" y="'+f1(clampY(lp.y))+'">'+p.lab+'</text>';}
+   }
+  }else{
+   shapes+='<circle class="pt" cx="'+f1(it.q.x)+'" cy="'+f1(it.q.y)+'" r="4.6"/>';
+   labels+='<text class="lbl" x="'+f1(clampX(it.q.x+p.o[0]))+'" y="'+f1(clampY(it.q.y+p.o[1]))+'">'+p.lab+'</text>';
+  }
+ });
+ return shapes+labels;
+}
+function renderScene(prims,v){
+ var polyP=prims.filter(function(p){return p.k==='poly';})[0];
+ if(polyP)return polySVG(polyP,v);
+ return renderPrims(prims,v);
+}
+function drawFig(id){
+ if(id==='sol'){drawSol();return;}
+ var svg=$('svg[data-fig="'+id+'"]');if(!svg)return;
+ var it=ITEMS[id],v=view(id),L=state.lang,t=T[L];
+ svg.innerHTML=renderScene(it.build(v.mode,v),v);
+ var cap=$('[data-cap="'+id+'"]');
+ if(cap){
+  if(it.dyn)cap.textContent=it.dyn(v,L);
+  else{var m=it.modes.filter(function(x){return x.id===v.mode})[0];if(m&&m.cap)cap.textContent=m.cap[L];}
+ }
+ var cn=$('[data-counts="'+id+'"]');
+ if(cn&&it.poly){
+  var c=polyCounts(it.poly(v));
+  cn.innerHTML=c.map(function(x,i){return '<div class="count"><span>'+t.cntNames[i]+' ('+t.cntLetters[i]+')</span><b>'+x+'</b></div>';}).join('');
+ }
+}
+
+/* ---------- views ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function cardHTML(id){
+ var it=ITEMS[id],L=state.lang,t=T[L],v=view(id),modes='';
+ if(it.modes.length>1){
+  modes='<div class="modes" role="group">'+it.modes.map(function(m){
+   return '<button type="button" class="mode" data-act="mode" data-id="'+id+'" data-mode="'+m.id+'" aria-pressed="'+(v.mode===m.id)+'">'+m[L]+'</button>';
+  }).join('')+'</div>';
+ }
+ var slider='';
+ if(it.slider){
+  slider='<label class="slider" for="n-'+id+'"><span>'+(it.slider.sym||'n')+' = <b id="nv-'+id+'">'+(it.slider.fmt?it.slider.fmt(v.n):v.n)+'</b>'+(it.slider.unit||'')+'</span><input type="range" id="n-'+id+'" data-id="'+id+'" min="'+it.slider.min+'" max="'+it.slider.max+'" value="'+v.n+'"></label>';
+ }
+ var proof='';
+ if(it.proof){
+  proof='<details class="proof"><summary>'+t.proof+'</summary><ol>'+it.proof.map(function(s){
+   return '<li>'+esc(s[L])+(s.ref?s.ref.map(function(r){return '<span class="ref">'+esc(tagOf(r))+'</span>';}).join(''):'')+'</li>';
+  }).join('')+'</ol></details>';
+ }
+ var defs=it.defs?'<ul class="defs">'+it.defs[L].map(function(d){return '<li>'+esc(d)+'</li>';}).join('')+'</ul>':'';
+ var extra=it.extra?'<p class="extra"><b>'+t.more+'.</b> '+esc(it.extra[L])+'</p>':'';
+ return '<article class="card" id="card-'+id+'">'+
+  '<div class="c-text">'+
+   '<div class="c-head"><span class="tag">'+esc(tagOf(id))+'</span><h2>'+it.title[L]+'</h2></div>'+
+   '<p class="stmt">'+it.stmt[L]+'</p>'+defs+
+   '<p class="sym"><small>'+t.sym+'</small>'+it.sym[L]+'</p>'+extra+
+   '<div class="real"><small>'+t.real+'</small><p>'+it.real[L]+'</p></div>'+
+   proof+
+  '</div>'+
+  '<div class="c-fig">'+
+   '<figure class="fig"><svg data-fig="'+id+'" viewBox="0 0 420 300" role="img" tabindex="0" aria-label="'+esc(it.title[L])+'"></svg>'+
+   '<figcaption data-cap="'+id+'"></figcaption></figure>'+
+   (it.counts?'<div class="counts" data-counts="'+id+'"></div>':'')+
+   modes+slider+
+   '<div class="fig-foot"><span>'+t.hint+'</span><button type="button" class="link-btn" data-act="reset" data-id="'+id+'">'+t.reset+'</button></div>'+
+   '<div class="work" aria-hidden="true"><small>'+(state.lang==='ru'?'Место для решения':'Шешуге арналған орын')+'</small></div>'+
+  '</div></article>';
+}
+function legendHTML(){
+ var L=state.lang;
+ return '<details class="legend"><summary>'+T[L].notation+'</summary><ul class="legend-g">'+
+  LEGEND.map(function(r){return '<li><b>'+r[0]+'</b><span>'+r[1][L]+'</span></li>'}).join('')+'</ul></details>';
+}
+function pick(x,L){return (x&&typeof x==='object')?x[L]:x;}
+function refMatch(e,L,q){
+ if(!q)return true;
+ var hay=[pick(e.s,'ru'),pick(e.s,'kk'),e.ru,e.kk,pick(e.ex,'ru'),pick(e.ex,'kk')].join(' ').toLowerCase();
+ return hay.indexOf(q.toLowerCase())>=0;
+}
+function refCard(e,L,t){
+ var top;
+ if(e.t){
+  var other=L==='ru'?'kk':'ru';
+  top='<div class="rc-top"><div class="rc-term">'+esc(e[L])+'</div><span class="rc-src">'+esc(e.src)+'</span></div><p class="rc-alt">'+(other==='ru'?'рус':'қаз')+': '+esc(e[other])+'</p>';
+  return '<div class="rc">'+top+'</div>';
+ }
+ var s=pick(e.s,L),ex=pick(e.ex,L),src=pick(e.src,L);
+ return '<div class="rc"><div class="rc-top"><button type="button" class="symbtn" data-act="copy" data-sym="'+esc(s).replace(/"/g,'&quot;')+'" aria-label="'+esc(t.copied)+': '+esc(s).replace(/"/g,'&quot;')+'">'+esc(s)+'</button>'+
+  '<span class="rc-src">'+(src==='app'?(L==='ru'?'в приложении':'қосымшада'):esc(src))+'</span></div>'+
+  '<p class="rc-txt">'+esc(e[L])+'</p>'+(ex?'<p class="rc-ex">'+esc(ex)+'</p>':'')+'</div>';
+}
+function refGridHTML(){
+ var L=state.lang,t=T[L],q=state.ref.q.trim(),g=state.ref.g,out='',any=false;
+ GROUPS.forEach(function(gr){
+  if(g!=='all'&&g!==gr.id)return;
+  var list=REF.filter(function(e){return e.g===gr.id&&refMatch(e,L,q);});
+  if(!list.length)return;
+  any=true;
+  out+='<section class="rgroup"><h3>'+gr[L]+'</h3><div class="ref-grid">'+list.map(function(e){return refCard(e,L,t);}).join('')+'</div></section>';
+ });
+ return any?out:'<p class="empty">'+t.empty+'</p>';
+}
+function refHTML(){
+ var L=state.lang,t=T[L];
+ var chips='<button type="button" class="mode" data-act="rgroup" data-g="all" aria-pressed="'+(state.ref.g==='all')+'">'+t.all+'</button>'+
+  GROUPS.map(function(gr){return '<button type="button" class="mode" data-act="rgroup" data-g="'+gr.id+'" aria-pressed="'+(state.ref.g===gr.id)+'">'+gr[L]+'</button>';}).join('');
+ return '<div class="stack"><p class="intro">'+t.intro.ref+'</p>'+
+  '<div class="ref-tools"><input type="search" id="refq" class="search" placeholder="'+esc(t.search)+'" value="'+esc(state.ref.q).replace(/"/g,'&quot;')+'" autocomplete="off"><div class="chips" role="group">'+chips+'</div></div>'+
+  '<div id="refGrid" style="display:grid;gap:18px">'+refGridHTML()+'</div><p class="src-note">'+t.srcNote+'</p></div>';
+}
+function quizHTML(){
+ var L=state.lang,t=T[L],q=state.quiz,n=QUIZ.length;
+ if(q.done){
+  var msg=q.score>=n-1?t.r5:(q.score>=Math.ceil(n*.6)?t.r3:t.r0);
+  return '<section class="card quiz"><div class="q-n">'+t.result+'</div><div class="score">'+q.score+' '+t.of+' '+n+'</div><p class="q-t">'+msg+'</p>'+
+   '<button type="button" class="btn" data-act="qrestart">'+t.again+'</button></section>';
+ }
+ var it=QUIZ[q.i],dots='',i;
+ for(i=0;i<n;i++)dots+='<i class="'+(i<=q.i?'on':'')+'"></i>';
+ var opts=it.o[L].map(function(o,i){
+  var cls='opt',dis='';
+  if(q.sel!==null){dis=' disabled';if(i===it.a)cls+=' ok';else if(i===q.sel)cls+=' bad';}
+  return '<button type="button" class="'+cls+'" data-act="qpick" data-i="'+i+'"'+dis+'><span class="k">'+String.fromCharCode(65+i)+'</span><span>'+o+'</span></button>';
+ }).join('');
+ var fb='';
+ if(q.sel!==null){
+  var good=q.sel===it.a;
+  fb='<p class="fb" role="status"><b class="'+(good?'ok':'bad')+'">'+(good?t.ok:t.bad)+'</b> '+it.w[L]+'</p>'+
+   '<button type="button" class="btn" data-act="qnext">'+(q.i===n-1?t.finish:t.next)+'</button>';
+ }
+ return '<section class="card quiz"><div class="prog" aria-hidden="true">'+dots+'</div>'+
+  '<div class="q-n">'+t.qOf+' '+(q.i+1)+' '+t.of+' '+n+'</div><h2 class="q-t">'+it.q[L]+'</h2><div class="opts">'+opts+'</div>'+fb+'</section>';
+}
+function renderView(){
+ var L=state.lang,t=T[L],h='',tab=state.tab;
+ if(LIST[tab]){
+  h='<div class="stack"><p class="intro">'+t.intro[tab]+'</p>'+(tab==='col'?legendHTML():'')+LIST[tab].map(cardHTML).join('')+'<p class="src-note">'+t.srcNote+'</p></div>';
+ }else if(tab==='sol')h=solHTML();
+ else if(tab==='ref')h=refHTML();
+ else h='<div class="stack">'+quizHTML()+'</div>';
+ $('#view').innerHTML=h;
+ (LIST[tab]||[]).forEach(drawFig);
+ if(tab==='sol')solAfterRender();
+}
+function renderTabs(){
+ var t=T[state.lang];
+ $('#tabs').innerHTML=TABS.map(function(k){
+  return '<button type="button" class="tab" role="tab" data-act="tab" data-tab="'+k+'" aria-selected="'+(state.tab===k)+'">'+t.tabs[k]+'</button>';
+ }).join('');
+}
+var ICON={
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+ pen:'<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19l-4 1z"/><path d="M14.5 6.5l3 3"/>',
+ eraser:'<path d="M9 19h11"/><path d="M5.6 15.4l8.8-8.8a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L12.5 19H9.4a2 2 0 0 1-1.4-.6l-2.4-2.4a1 1 0 0 1 0-1.4z"/>',
+ line:'<path d="M5 19L19 5"/><circle cx="5" cy="19" r="1.7"/><circle cx="19" cy="5" r="1.7"/>',
+ undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+ trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'
+};
+function svgI(n){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';}
+function renderTheme(){
+ var t=T[state.lang],b=$('#themeBtn');
+ document.documentElement.setAttribute('data-theme',state.theme);
+ b.innerHTML=svgI(state.theme==='dark'?'sun':'moon');
+ var lab=state.theme==='dark'?t.toLight:t.toDark;
+ b.setAttribute('aria-label',lab);b.setAttribute('title',lab);
+}
+
+/* ---------- pen / ink layer ---------- */
+var ink=$('#ink'),ctx=ink.getContext('2d'),dpr=1;
+var penStore=LS.get('coord3.ink')||{};
+var pen={tool:'off',color:'p1',size:1,armed:false};
+var SIZES=[2.2,4,7];
+var strokes=[],cur=null,erasing=false,armTimer=null;
+function penKey(){return state.lang+'|'+state.tab;}
+function loadStrokes(){var k=penKey();if(!Array.isArray(penStore[k]))penStore[k]=[];strokes=penStore[k];}
+function saveInk(){LS.set('coord3.ink',penStore);}
+function colorOf(c){return getComputedStyle(document.documentElement).getPropertyValue('--pen-'+c.slice(1)).trim()||'#1b3fd0';}
+function sizeInk(){
+ var v=$('#view'),w=v.clientWidth,h=v.clientHeight;
+ if(!w||!h)return;
+ dpr=Math.min(window.devicePixelRatio||1,1.5);
+ ink.width=Math.round(w*dpr);ink.height=Math.round(h*dpr);
+ ink.style.width=w+'px';ink.style.height=h+'px';
+ drawAll();
+}
+function setLine(s){
+ var col=colorOf(s.c);
+ ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=s.w;ctx.lineCap='round';ctx.lineJoin='round';
+}
+function drawStroke(s){
+ var w=ink.clientWidth,p=s.p.map(function(a){return [a[0]*w,a[1]]});
+ setLine(s);
+ if(p.length===1){ctx.beginPath();ctx.arc(p[0][0],p[0][1],s.w/2,0,6.2832);ctx.fill();return;}
+ ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);
+ for(var i=1;i<p.length-1;i++){ctx.quadraticCurveTo(p[i][0],p[i][1],(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2);}
+ var l=p[p.length-1];ctx.lineTo(l[0],l[1]);ctx.stroke();
+}
+function drawAll(){
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,ink.clientWidth,ink.clientHeight);
+ strokes.forEach(drawStroke);
+}
+function pos(e){var r=ink.getBoundingClientRect();return [(e.clientX-r.left)/r.width,e.clientY-r.top];}
+function strokeHit(s,x,y,R,w){
+ if(s.line){var ax=s.p[0][0]*w,ay=s.p[0][1],bx=s.p[1][0]*w,by=s.p[1][1],vx=bx-ax,vy=by-ay,L2=vx*vx+vy*vy,t=L2?Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/L2)):0,px=ax+t*vx-x,py=ay+t*vy-y;return px*px+py*py<R*R;}
+ return s.p.some(function(a){var dx=a[0]*w-x,dy=a[1]-y;return dx*dx+dy*dy<R*R;});
+}
+function eraseAt(e){
+ var r=ink.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,R=15,n=strokes.length;
+ for(var i=strokes.length-1;i>=0;i--){
+  if(strokeHit(strokes[i],x,y,R,r.width))strokes.splice(i,1);
+ }
+ if(strokes.length!==n)drawAll();
+}
+ink.addEventListener('pointerdown',function(e){
+ if(pen.tool==='off')return;
+ e.preventDefault();
+ try{ink.setPointerCapture(e.pointerId);}catch(x){}
+ if(pen.tool==='line'){cur={c:pen.color,w:SIZES[pen.size],p:[pos(e),pos(e)],line:1};strokes.push(cur);drawAll();return;}
+ if(pen.tool==='pen'){
+  cur={c:pen.color,w:SIZES[pen.size],p:[pos(e)]};strokes.push(cur);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  var q=cur.p[0];setLine(cur);ctx.beginPath();ctx.arc(q[0]*ink.clientWidth,q[1],cur.w/2,0,6.2832);ctx.fill();
+ }else{erasing=true;eraseAt(e);}
+});
+ink.addEventListener('pointermove',function(e){
+ if(cur&&cur.line){var p0=pos(e),a0=cur.p[0],w0=ink.clientWidth,ddx=(p0[0]-a0[0])*w0,ddy=p0[1]-a0[1],g0=Math.atan2(Math.abs(ddy),Math.abs(ddx))/D;if(g0<3)p0[1]=a0[1];else if(g0>87)p0[0]=a0[0];cur.p[1]=p0;drawAll();return;}
+ if(cur){
+  var p=pos(e),l=cur.p[cur.p.length-1],w=ink.clientWidth,dx=(p[0]-l[0])*w,dy=p[1]-l[1];
+  if(dx*dx+dy*dy<2.25)return;
+  cur.p.push(p);
+  ctx.setTransform(dpr,0,0,dpr,0,0);setLine(cur);
+  ctx.beginPath();ctx.moveTo(l[0]*w,l[1]);ctx.lineTo(p[0]*w,p[1]);ctx.stroke();
+ }else if(erasing){eraseAt(e);}
+});
+function endInk(){
+ if(cur){cur=null;drawAll();saveInk();}
+ if(erasing){erasing=false;saveInk();}
+}
+ink.addEventListener('pointerup',endInk);
+ink.addEventListener('pointercancel',endInk);
+
+function toast(msg){
+ var el=$('#toast');el.textContent=msg;el.hidden=false;
+ clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3200);
+}
+function renderPen(){
+ var t=T[state.lang];
+ var colors=['p1','p2','p3'].map(function(c,i){
+  return '<button type="button" class="tool sw" data-color="'+c+'" aria-pressed="'+(pen.tool==='pen'&&pen.color===c)+'" aria-label="'+t['c'+(i+1)]+'" title="'+t['c'+(i+1)]+'"><i class="dot" style="background:var(--pen-'+(i+1)+')"></i></button>';
+ }).join('');
+ var sz=Math.round(SIZES[pen.size]*1.6+4);
+ $('#penWrap').innerHTML='<div class="pen-bar" role="toolbar" aria-label="'+t.penGroup+'">'+
+  '<button type="button" class="tool" data-tool="pen" aria-pressed="'+(pen.tool==='pen')+'" aria-label="'+t.pen+'" title="'+t.pen+'">'+svgI('pen')+'</button>'+
+  '<button type="button" class="tool" data-tool="eraser" aria-pressed="'+(pen.tool==='eraser')+'" aria-label="'+t.eraser+'" title="'+t.eraser+'">'+svgI('eraser')+'</button>'+
+  '<button type="button" class="tool" data-tool="line" aria-pressed="'+(pen.tool==='line')+'" aria-label="'+t.lineTool+'" title="'+t.lineTool+'">'+svgI('line')+'</button>'+
+  '<span class="sep"></span>'+colors+
+  '<button type="button" class="tool" data-act="size" aria-label="'+t.size+'" title="'+t.size+'"><i class="dot" style="width:'+sz+'px;height:'+sz+'px"></i></button>'+
+  '<span class="sep"></span>'+
+  '<button type="button" class="tool" data-act="undo" aria-label="'+t.undo+'" title="'+t.undo+'">'+svgI('undo')+'</button>'+
+  '<button type="button" class="tool'+(pen.armed?' armed':'')+'" data-act="clear" aria-label="'+(pen.armed?t.clearArmed:t.clear)+'" title="'+(pen.armed?t.clearArmed:t.clear)+'">'+svgI('trash')+'</button>'+
+  '</div>';
+ document.body.setAttribute('data-tool',pen.tool);
+}
+
+/* ---------- events ---------- */
+function setTool(name){
+ var t=T[state.lang];
+ pen.tool=(pen.tool===name)?'off':name;
+ renderPen();
+ if(pen.tool==='pen')toast(t.penOn);else if(pen.tool==='eraser')toast(t.eraserOn);else if(pen.tool==='line')toast(t.lineOn);
+}
+function copySym(s){
+ var t=T[state.lang];
+ function ok(){toast(t.copied+': '+s);}
+ function fail(){toast(t.copyFail);}
+ try{
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(ok,fail);}else fail();
+ }catch(e){fail();}
+}
+document.addEventListener('click',function(e){
+ var el=e.target.closest('button');if(!el)return;
+ var t=T[state.lang];
+ if(el.dataset.lang){
+  state.lang=el.dataset.lang;savePrefs();fullRender();return;
+ }
+ if(el.dataset.size!==undefined&&el.closest('#sizeSeg')){state.size=+el.dataset.size;savePrefs();applySize();requestAnimationFrame(function(){sizeInk();drawAll();});return;}
+ if(el.dataset.tool){setTool(el.dataset.tool);return;}
+ if(el.dataset.color){pen.color=el.dataset.color;pen.tool='pen';renderPen();return;}
+ var act=el.dataset.act;if(!act)return;
+ if(act==='theme'){state.theme=state.theme==='dark'?'light':'dark';savePrefs();renderTheme();requestAnimationFrame(drawAll);}
+ else if(act==='tab'){state.tab=el.dataset.tab;savePrefs();fullRender();window.scrollTo(0,0);}
+ else if(act==='mode'){
+  var v=view(el.dataset.id),nm=el.dataset.mode;
+  if(nm==='net'){v.yaw=0;v.pitch=Math.PI/2;}
+  else if(v.mode==='net'){v.yaw=-.55;v.pitch=.5;}
+  v.mode=nm;
+  $$('[data-act="mode"][data-id="'+el.dataset.id+'"]').forEach(function(b){b.setAttribute('aria-pressed',String(b===el));});
+  drawFig(el.dataset.id);
+ }
+ else if(act==='reset'){var v2=view(el.dataset.id);var it0=ITEMS[el.dataset.id];v2.yaw=it0.v0?it0.v0.yaw:-.55;v2.pitch=it0.v0?it0.v0.pitch:.5;drawFig(el.dataset.id);}
+ else if(act==='rgroup'){
+  state.ref.g=el.dataset.g;
+  $$('[data-act="rgroup"]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.g===state.ref.g));});
+  $('#refGrid').innerHTML=refGridHTML();requestAnimationFrame(sizeInk);
+ }
+ else if(act==='copy'){copySym(el.dataset.sym);}
+ else if(act==='qpick'){
+  var q=state.quiz;if(q.sel!==null)return;
+  q.sel=+el.dataset.i;if(q.sel===QUIZ[q.i].a)q.score++;renderView();sizeInk();
+ }
+ else if(act==='qnext'){
+  var qq=state.quiz;
+  if(qq.i===QUIZ.length-1)qq.done=true;else{qq.i++;qq.sel=null;}
+  renderView();sizeInk();
+ }
+ else if(act==='qrestart'){state.quiz={i:0,sel:null,score:0,done:false};renderView();sizeInk();}
+ else if(act==='size'){pen.size=(pen.size+1)%SIZES.length;renderPen();}
+ else if(act==='undo'){strokes.pop();drawAll();saveInk();}
+ else if(act==='clear'){
+  if(pen.armed){strokes.length=0;drawAll();saveInk();pen.armed=false;clearTimeout(armTimer);renderPen();toast(t.cleared);}
+  else{pen.armed=true;renderPen();toast(t.clearArmed);clearTimeout(armTimer);armTimer=setTimeout(function(){pen.armed=false;renderPen();},3000);}
+ }
+});
+document.addEventListener('input',function(e){
+ var el=e.target;
+ if(el.id==='refq'){state.ref.q=el.value;$('#refGrid').innerHTML=refGridHTML();requestAnimationFrame(sizeInk);}
+ else if(el.type==='range'&&el.dataset.id){
+  var v=view(el.dataset.id);v.n=+el.value;
+  var nv=$('#nv-'+el.dataset.id);if(nv){var sl=ITEMS[el.dataset.id].slider;nv.textContent=sl&&sl.fmt?sl.fmt(v.n):v.n;}
+  drawFig(el.dataset.id);
+ }
+});
+
+/* drag to rotate figures */
+var drag=null;
+document.addEventListener('pointerdown',function(e){
+ var s=e.target.closest&&e.target.closest('svg[data-fig]');if(!s)return;
+ drag={id:s.dataset.fig,x:e.clientX,y:e.clientY,pid:e.pointerId,svg:s};
+ try{s.setPointerCapture(e.pointerId);}catch(x){}
+ s.classList.add('grab');
+});
+document.addEventListener('pointermove',function(e){
+ if(!drag||e.pointerId!==drag.pid)return;
+ var v=view(drag.id),dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+ drag.x=e.clientX;drag.y=e.clientY;
+ v.yaw+=dx*.011;
+ if(e.pointerType==='mouse')v.pitch=Math.max(-.25,Math.min(Math.PI/2,v.pitch+dy*.01));
+ drawFig(drag.id);
+});
+function endDrag(e){if(drag&&e.pointerId===drag.pid){drag.svg.classList.remove('grab');drag=null;}}
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',endDrag);
+document.addEventListener('keydown',function(e){
+ var s=e.target.closest&&e.target.closest('svg[data-fig]');if(!s)return;
+ var v=view(s.dataset.fig),k=e.key,h=true;
+ if(k==='ArrowLeft')v.yaw-=.12;else if(k==='ArrowRight')v.yaw+=.12;
+ else if(k==='ArrowUp')v.pitch=Math.min(Math.PI/2,v.pitch+.08);else if(k==='ArrowDown')v.pitch=Math.max(-.25,v.pitch-.08);
+ else h=false;
+ if(h){e.preventDefault();drawFig(s.dataset.fig);}
+});
+
+/* ================= solver UI ================= */
+var SOLT={
+ ru:{showSol:'Показать решение',hideSol:'Скрыть решение',task0:'Условие',mSolve:'Решатель',mMatch:'Задания на соответствие',mSets:'Наборы заданий',mLeft:'Левый столбец',mRight:'Правый столбец',mHelp:'Нажмите на карточку слева, затем на подходящую карточку справа. Нажмите на уже соединённую карточку, чтобы разъединить пару.',mCheck:'Проверить',mReset:'Начать заново',mAll:'Все пары верны.',mFix:'Исправьте пары с ✗ и проверьте ещё раз.',kind:'Что найти',vals:'Данные',ex:'Примеры из учебника',ans:'Ответ',sol:'Решение',cap:'Искомые точки и векторы выделены цветом и толстой линией.',bad:'Проверьте данные',dims:'Размеры параллелепипеда',v1:'Первая вершина',v2:'Вторая вершина',DC:'DC',DA:'DA',DD:'DD₁',dimh:'DC лежит на Ox, DA — на Oy, DD₁ — на Oz'},
+ kk:{showSol:'Шешуін көрсету',hideSol:'Шешуін жасыру',task0:'Шарты',mSolve:'Шешуші',mMatch:'Сәйкестендіру тапсырмалары',mSets:'Тапсырмалар жиынтығы',mLeft:'Сол жақ баған',mRight:'Оң жақ баған',mHelp:'Солдағы карточканы, сонан соң оңдағы сәйкес карточканы басыңыз. Жұпты ажырату үшін қосылған карточканы қайта басыңыз.',mCheck:'Тексеру',mReset:'Қайта бастау',mAll:'Барлық жұп дұрыс.',mFix:'✗ белгілі жұптарды түзетіп, қайта тексеріңіз.',kind:'Нені табу керек',vals:'Берілгендер',ex:'Оқулықтағы мысалдар',ans:'Жауабы',sol:'Шешуі',cap:'Ізделінді нүктелер мен векторлар түспен және қалың сызықпен көрсетілген.',bad:'Деректерді тексеріңіз',dims:'Параллелепипедтің өлшемдері',v1:'Бірінші төбе',v2:'Екінші төбе',DC:'DC',DA:'DA',DD:'DD₁',dimh:'DC — Ox осінде, DA — Oy осінде, DD₁ — Oz осінде жатыр'}
+};
+state.sol=null;
+ITEMS.sol={v0:{yaw:-.35,pitch:.35},def:'x',modes:[]};
+function solInit(){
+ if(state.sol)return;
+ var e=SOLEX[0];
+ state.sol={kind:e.kind,vals:JSON.parse(JSON.stringify(e.vals)),ex:e.id};
+}
+function solKindSet(k){var s=state.sol;s.kind=k;s.vals=JSON.parse(JSON.stringify(CDEF[k]));s.ex=null;}
+function numInput(key,idx,label,val,min){
+ return '<label class="sol-n"><span>'+label+' =</span><input type="number" inputmode="decimal" step="any"'+(min?' min="0.01"':'')+' class="sol-in" data-key="'+key+'" data-i="'+idx+'" value="'+val+'" aria-label="'+esc(label)+'"></label>';
+}
+function solControls(){
+ var s=state.sol,L=state.lang,t=SOLT[L],h='',i;
+ h+='<div class="sol-f"><label for="sol-kind">'+t.kind+'</label><select id="sol-kind">'+CKINDS.map(function(q){return '<option value="'+q.id+'"'+(q.id===s.kind?' selected':'')+'>'+q[L]+'</option>';}).join('')+'</select></div>';
+ if(s.kind==='box'){
+  var v=s.vals;
+  h+='<div class="sol-f"><label>'+t.dims+'</label><div class="sol-par">'+numInput('p',0,t.DC,v.p,1)+numInput('q',0,t.DA,v.q,1)+numInput('r',0,t.DD,v.r,1)+'</div><small class="sol-hint">'+t.dimh+'</small></div>';
+  var opts=function(cur){return CVK.map(function(k){return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+vname(k)+'</option>';}).join('');};
+  h+='<div class="sol-objs"><fieldset class="sol-o"><legend>'+t.vals+'</legend><label class="sol-v"><span>'+t.v1+'</span><select class="sol-sel" data-key="P">'+opts(v.P)+'</select></label><label class="sol-v"><span>'+t.v2+'</span><select class="sol-sel" data-key="Q">'+opts(v.Q)+'</select></label></fieldset></div>';
+ }else{
+  h+='<div class="sol-objs">'+CFLD[s.kind].map(function(f){
+   var key=f[0],nm=f[1];
+   if(f[2]==='n')return '<fieldset class="sol-o"><legend>'+nm+'</legend>'+numInput(key,0,nm,s.vals[key])+'</fieldset>';
+   return '<fieldset class="sol-o"><legend>'+nm+'</legend>'+['x','y','z'].map(function(ax,i2){return numInput(key,i2,ax,s.vals[key][i2]);}).join('')+'</fieldset>';
+  }).join('')+'</div>';
+ }
+ h+='<div class="sol-f"><label>'+t.ex+'</label><div class="modes" role="group">'+SOLEX.map(function(e){
+  return '<button type="button" class="mode" data-act="solex" data-id="'+e.id+'" aria-pressed="'+(s.ex===e.id)+'">'+(typeof e.tag==='object'?e.tag[L]:e.tag)+' · '+e[L]+'</button>';
+ }).join('')+'</div></div>';
+ return h;
+}
+function cTask(kind,V){
+ var L=state.lang,a=V.k1,b=V.k2,c3=V.k3,d4=V.k4,c=function(x){return cs(x);};
+ var A=a?c(a):'',B=b?c(b):'',C3=c3?c(c3):'',D4=d4?c(d4):'';
+ var q={
+  col2:T2('Коллинеарны ли векторы a'+A+' и b'+B+'? Если да, найдите число λ, при котором b = λ·a.','a'+A+' және b'+B+' векторлары коллинеар ма? Егер иә болса, b = λ·a болатын λ санын табыңдар.'),
+  unk:T2('При каком значении m векторы a'+A+' и b('+fmtN(V.u||0,3)+'; '+fmtN(V.w||0,3)+'; m) коллинеарны?','m-нің қандай мәнінде a'+A+' және b('+fmtN(V.u||0,3)+'; '+fmtN(V.w||0,3)+'; m) векторлары коллинеар?'),
+  col3p:T2('Лежат ли точки A'+A+', B'+B+', C'+C3+' на одной прямой? Если да, определите, какая точка лежит между двумя другими.','A'+A+', B'+B+', C'+C3+' нүктелері бір түзуде жата ма? Егер иә болса, қай нүкте қалған екеуінің арасында жатқанын анықтаңдар.'),
+  par4:T2('Параллельны ли прямые AB и CD, если A'+A+', B'+B+', C'+C3+', D'+D4+'? Совпадают ли они?','A'+A+', B'+B+', C'+C3+', D'+D4+' болса, AB және CD түзулері параллель ме? Олар беттесе ме?'),
+  cop3:T2('Компланарны ли векторы a'+A+', b'+B+', c'+C3+'? Если да, разложите c по a и b.','a'+A+', b'+B+', c'+C3+' векторлары компланар ма? Егер иә болса, c векторын a және b бойынша жіктеңдер.'),
+  cop4p:T2('Лежат ли точки A'+A+', B'+B+', C'+C3+', D'+D4+' в одной плоскости?','A'+A+', B'+B+', C'+C3+', D'+D4+' нүктелері бір жазықтықта жата ма?'),
+  dec3:T2('Разложите вектор d'+D4+' по векторам a'+A+', b'+B+', c'+C3+'.','d'+D4+' векторын a'+A+', b'+B+', c'+C3+' векторлары бойынша жіктеңдер.')
+ }[kind];
+ return q[L];
+}
+function solTaskHTML(){
+ var s=state.sol,L=state.lang,t=SOLT[L],ex=SOLEX.filter(function(e){return e.id===s.ex;})[0];
+ var tag=ex?'<span class="tag">'+esc(typeof ex.tag==='object'?ex.tag[L]:ex.tag)+'</span> ':'';
+ return '<div class="m-task"><small>'+tag+t.task0+'</small><p>'+esc(String(cTask(s.kind,s.vals)).replace(/(^|[\s(;])-(?=\d)/g,'$1−'))+'</p></div>';
+}
+function solOutHTML(out){
+ var L=state.lang,t=SOLT[L];
+ if(!out.ok)return '<p class="fb" role="status"><b class="bad">'+t.bad+'.</b> '+esc(out.err[L])+'</p>';
+ if(!state.solShow)return '<button type="button" class="btn" data-act="solshow" aria-expanded="false">'+t.showSol+'</button>';
+ var main=out.res.filter(function(r){return r.main;})[0]||out.res[0];
+ var mm=function(z){return String(z).replace(/(^|[\s(;])-(?=\d)/g,'$1\u2212');};
+ var txt=function(x){return esc(mm(typeof x==='object'?x[L]:x));};
+ return '<div class="sol-ans" role="status"><small>'+t.ans+'</small>'+out.res.map(function(r){return '<div class="sol-res'+(r===main?' main':'')+'"><span class="k">'+txt(r.k)+'</span><b>'+txt(r.v)+'</b></div>';}).join('')+'</div>'+
+  '<details class="proof" open><summary>'+t.sol+'</summary><ol>'+out.steps.map(function(x){return '<li>'+esc(mm(x[L]))+'</li>';}).join('')+'</ol></details><button type="button" class="btn ghost" data-act="solshow" aria-expanded="true">'+t.hideSol+'</button>';
+}
+function solCompute(){
+ var s=state.sol,out=cSolve(s.kind,s.vals);
+ state.solCache={out:out};
+ return state.solCache;
+}
+function drawSol(){
+ var svg=$('svg[data-fig="sol"]');if(!svg||!state.sol)return;
+ var c=state.solCache||solCompute();
+ svg.innerHTML=c.out.ok?renderScene(cScene(c.out),view('sol')):'';
+}
+function solRefresh(){
+ var c=solCompute(),o=$('#solOut');
+ if(o)o.innerHTML=solOutHTML(c.out);
+ var tk=$('#solTask');if(tk)tk.innerHTML=solTaskHTML();
+ drawSol();
+ requestAnimationFrame(sizeInk);
+}
+function solHTML(){
+ solInit();
+ var L=state.lang,t=SOLT[L],tt=T[L],md=state.solMode;
+ var sw='<div class="modes" role="group" aria-label="'+esc(tt.tabs.sol)+'">'+
+  '<button type="button" class="mode" data-act="solmode" data-v="solve" aria-pressed="'+(md==='solve')+'">'+t.mSolve+'</button>'+
+  '<button type="button" class="mode" data-act="solmode" data-v="match" aria-pressed="'+(md==='match')+'">'+t.mMatch+'</button></div>';
+ if(md==='match')return '<div class="stack"><p class="intro">'+tt.intro.sol+'</p>'+sw+matchHTML()+'<p class="src-note">'+tt.srcNote+'</p></div>';
+ return '<div class="stack"><p class="intro">'+tt.intro.sol+'</p>'+sw+
+  '<article class="card sol" id="card-sol"><div class="c-text"><div id="solCtl">'+solControls()+'</div></div>'+
+  '<div class="c-fig"><figure class="fig"><svg data-fig="sol" viewBox="0 0 420 300" role="img" tabindex="0" aria-label="'+esc(tt.tabs.sol)+'"></svg><figcaption>'+t.cap+'</figcaption></figure>'+
+  '<div id="solTask">'+solTaskHTML()+'</div><div class="fig-foot"><span>'+tt.hint+'</span><button type="button" class="link-btn" data-act="reset" data-id="sol">'+tt.reset+'</button></div></div><div class="sol-zone"><div id="solOut"></div><div class="work" aria-hidden="true"><small>'+(L==='ru'?'Место для решения':'Шешуге арналған орын')+'</small></div></div></article>'+
+  '<p class="src-note">'+tt.srcNote+'</p></div>';
+}
+/* ---- matching cards ---- */
+function TS(ru,kk){return {ru:ru,kk:kk};}
+var MATCH=[
+ {t:{ru:'Рисунок → коллинеарность',kk:'Сурет → коллинеарлық'},
+  n:{ru:'Что показано на рисунке: векторы или точки?',kk:'Суретте не көрсетілген: векторлар ма, әлде нүктелер ме?'},p:[
+  [{img:'c1'},TS('коллинеарны, сонаправлены','коллинеар, бағыттас')],
+  [{img:'c2'},TS('коллинеарны, противоположно направлены','коллинеар, қарама-қарсы бағытталған')],
+  [{img:'c3'},TS('не коллинеарны','коллинеар емес')],
+  [{img:'k1'},TS('три точки на одной прямой','үш нүкте бір түзуде')],
+  [{img:'k2'},TS('три точки не на одной прямой','үш нүкте бір түзуде емес')]]},
+ {t:{ru:'Рисунок → компланарность и разложение',kk:'Сурет → компланарлық және жіктеу'},
+  n:{ru:'Смотрите, лежат ли векторы в одной плоскости.',kk:'Векторлардың бір жазықтықта жатуын қараңыз.'},p:[
+  [{img:'p1'},TS('a, b, c компланарны','a, b, c компланар')],
+  [{img:'p2'},TS('a, b, c некомпланарны','a, b, c компланар емес')],
+  [{img:'p3'},TS('c = x·a + y·b','c = x·a + y·b')],
+  [{img:'r1'},TS('OD = a + b + c (правило параллелепипеда)','OD = a + b + c (параллелепипед ережесі)')],
+  [{img:'r2'},TS('d = x·a + y·b + z·c','d = x·a + y·b + z·c')]]},
+ {t:{ru:'Коллинеарные векторы: найдите λ (b = λ·a)',kk:'Коллинеар векторлар: λ табыңдар (b = λ·a)'},p:[
+  ['a(1; 2; 3), b(2; 4; 6)','λ = 2'],['a(2; −4; 6), b(−1; 2; −3)','λ = −1/2'],['a(3; 0; 6), b(1; 0; 2)','λ = 1/3'],['a(−2; 1; 4), b(6; −3; −12)','λ = −3'],['a(4; 8; 12), b(1; 2; 3)','λ = 1/4']]},
+ {t:{ru:'Значение m, при котором векторы коллинеарны',kk:'Векторлар коллинеар болатын m мәні'},p:[
+  ['a(2; 4; 6), b(1; 2; m)','m = 3'],['a(1; −2; 4), b(−3; 6; m)','m = −12'],['a(−2; 1; 5), b(4; −2; m)','m = −10'],['a(4; 2; 1), b(2; 1; m)','m = 1/2'],['a(3; 6; 9), b(2; 4; m)','m = 6']]},
+ {t:{ru:'Коллинеарны ли векторы a и b?',kk:'a және b векторлары коллинеар ма?'},p:[
+  ['a(1; 2; 3), b(2; 4; 7)',TS('не коллинеарны: 7/3 ≠ 2','коллинеар емес: 7/3 ≠ 2')],
+  ['a(1; 2; 3), b(−2; −4; −6)',TS('коллинеарны, противоположно направлены','коллинеар, қарама-қарсы бағытталған')],
+  ['a(0; 0; 0), b(1; 2; 3)',TS('коллинеарны (нулевой вектор)','коллинеар (нөлдік вектор)')],
+  ['a(1; 0; 2), b(3; 0; 6)',TS('коллинеарны, сонаправлены','коллинеар, бағыттас')],
+  ['a(1; 2; 0), b(2; 4; 1)',TS('не коллинеарны: 1 ≠ 2·0','коллинеар емес: 1 ≠ 2·0')]]},
+ {t:{ru:'Три точки A, B, C',kk:'A, B, C үш нүктесі'},p:[
+  ['A(0; 0; 0), B(1; 2; 3), C(3; 6; 9)',TS('на одной прямой, B между A и C','бір түзуде, B нүктесі A мен C арасында')],
+  ['A(0; 0; 0), B(2; 4; 6), C(1; 2; 3)',TS('на одной прямой, C между A и B','бір түзуде, C нүктесі A мен B арасында')],
+  ['A(1; 1; 1), B(2; 3; 4), C(0; −1; −2)',TS('на одной прямой, A между C и B','бір түзуде, A нүктесі C мен B арасында')],
+  ['A(0; 0; 0), B(1; 2; 3), C(2; 4; 7)',TS('не лежат на одной прямой','бір түзуде жатпайды')]]},
+ {t:{ru:'Прямые AB и CD',kk:'AB және CD түзулері'},p:[
+  ['A(1; 0; 0), B(3; 2; 4), C(0; 1; 1), D(1; 2; 3)',TS('параллельны, CD = ½·AB','параллель, CD = ½·AB')],
+  ['A(0; 0; 0), B(1; 1; 1), C(2; 2; 2), D(3; 3; 3)',TS('совпадают','беттеседі')],
+  ['A(0; 0; 0), B(1; 2; 3), C(1; 0; 0), D(2; 3; 3)',TS('не параллельны','параллель емес')],
+  ['A(0; 0; 0), B(1; 0; 0), C(0; 1; 0), D(2; 1; 0)',TS('параллельны, CD = 2·AB','параллель, CD = 2·AB')]]},
+ {t:{ru:'Компланарны ли три вектора?',kk:'Үш вектор компланар ма?'},p:[
+  ['i(1; 0; 0), j(0; 1; 0), k(0; 0; 1)',TS('некомпланарны','компланар емес')],
+  ['a(1; 2; 3), b(2; 1; 0), c(3; 3; 3)',TS('компланарны, c = a + b','компланар, c = a + b')],
+  ['a(1; 2; 3), b(2; 4; 6), c(0; 0; 1)',TS('компланарны, так как a ∥ b','компланар, өйткені a ∥ b')],
+  ['a(1; 0; 0), b(0; 1; 0), c(2; −3; 0)',TS('компланарны, c = 2a − 3b','компланар, c = 2a − 3b')],
+  ['a(1; 1; 0), b(1; 0; 1), c(0; 1; 1)',TS('некомпланарны, Δ = −2','компланар емес, Δ = −2')]]},
+ {t:{ru:'Разложение вектора d по a(1; 1; 0), b(1; 0; 1), c(0; 1; 1)',kk:'d векторын a(1; 1; 0), b(1; 0; 1), c(0; 1; 1) бойынша жіктеу'},p:[
+  ['d(3; 2; 1)','d = 2a + b'],['d(2; 3; 1)','d = 2a + c'],['d(1; 2; 3)','d = b + 2c'],['d(5; 4; 3)','d = 3a + 2b + c'],['d(2; 2; 2)','d = a + b + c']]},
+ {t:{ru:'Термины и их смысл',kk:'Терминдер және олардың мәні'},p:[
+  [TS('коллинеарные векторы','коллинеар векторлар'),TS('лежат на одной или на параллельных прямых','бір немесе параллель түзулерде жатады')],
+  [TS('компланарные векторы','компланар векторлар'),TS('лежат в одной плоскости при общем начале','ортақ бастауда бір жазықтықта жатады')],
+  [TS('нулевой вектор','нөлдік вектор'),TS('коллинеарен любому вектору','кез келген векторға коллинеар')],
+  [TS('коэффициенты разложения','жіктеу коэффициенттері'),TS('числа x, y, z в равенстве d = x·a + y·b + z·c','d = x·a + y·b + z·c теңдігіндегі x, y, z сандары')],
+  [TS('базис пространства','кеңістіктің базисі'),TS('три некомпланарных вектора','компланар емес үш вектор')]]},
+ {t:{ru:'Формулы и их названия',kk:'Формулалар және олардың атаулары'},p:[
+  ['b = λ·a',TS('признак коллинеарности','коллинеарлық белгісі')],
+  ['c = x·a + y·b',TS('признак компланарности','компланарлық белгісі')],
+  ['d = x·a + y·b + z·c',TS('разложение по трём векторам','үш вектор бойынша жіктеу')],
+  ['OD = a + b + c',TS('правило параллелепипеда','параллелепипед ережесі')],
+  ['x₂/x₁ = y₂/y₁ = z₂/z₁',TS('коллинеарность в координатах','координаталардағы коллинеарлық')]]},
+ {t:{ru:'Пример из жизни → тема',kk:'Өмірден мысал → тақырып'},p:[
+  [TS('два поезда на соседних путях','көрші жолдардағы екі пойыз'),TS('коллинеарные векторы','коллинеар векторлар')],
+  [TS('крышка стола и два вектора вдоль краёв','үстел беті және жиектері бойындағы екі вектор'),TS('компланарные векторы','компланар векторлар')],
+  [TS('три силы, приложенные к одной точке','бір нүктеге түсірілген үш күш'),TS('правило параллелепипеда','параллелепипед ережесі')],
+  [TS('дрон: на север, на восток, вверх','дрон: солтүстікке, шығысқа, жоғарыға'),TS('разложение по трём векторам','үш вектор бойынша жіктеу')],
+  [TS('опоры ЛЭП в одну линию','бір сызықтағы ЭЖЖ тіректері'),TS('три точки на одной прямой','үш нүкте бір түзуде')]]}
+];
+
+/* ---- pictures for matching cards ---- */
+var ARW=1;
+function mAx(){return axes3(1.6,.6);}
+function mTri3(A,B,C,s,lab){return [Sg(A,B,s,'a',2.4),Sg(B,C,s,'b',2.4),Sg(C,A,s,'c',2.4),Pn(A,s,'A',[-12,-8]),Pn(B,s,'B',[12,-10]),Pn(C,s,'C',[0,16])];}
+var MIMG={
+ c1:function(){var s=.34,a=[1,.5,1];return [Ar([-1.2,1,0],vadd([-1.2,1,0],a),s,'a','a',[-12,-6],2.6),Ar([.6,-1,0],vadd([.6,-1,0],vmul(a,2)),s,'accent','b',[12,-8],3)];},
+ c2:function(){var s=.34,a=[1,.5,1];return [Ar([-1.2,1,0],vadd([-1.2,1,0],a),s,'a','a',[-12,-6],2.6),Ar([2.2,-1,0],vadd([2.2,-1,0],vmul(a,-1.5)),s,'accent','b',[12,-8],3)];},
+ c3:function(){var s=.34;return [Ar([0,0,0],[2,0,0],s,'a','a',[0,16],2.6),Ar([0,0,0],[.8,1.4,.6],s,'accent','b',[-12,-6],3)];},
+ k1:function(){var s=.3,A=[-1,-.5,0],B=[0.5,.25,1],C=[2.5,1.25,2.5];return [lin([-1.6,-.8,-.5],[3,1.5,3],s,'faint',1.2,1),Pn(A,s,'A',[-12,-8]),Pn(B,s,'B',[12,-10]),Pn(C,s,'C',[12,-8])];},
+ k2:function(){var s=.3,A=[-1.2,-.8,0],B=[1.5,-.4,1],C=[.2,1.6,.6];return mTri3(A,B,C,s);},
+ p1:function(){var s=.45,a=[2,0,0],b=[0,2,0],c=[1.1,1.3,0];return [planeQ([0,0,0],a,b,.9,s,'a'),Ar([0,0,0],a,s,'a','a',[0,16],2.4),Ar([0,0,0],b,s,'b','b',[-14,0],2.4),Ar([0,0,0],c,s,'accent','c',[12,-8],3)];},
+ p2:function(){var s=.45,a=[2,0,0],b=[0,2,0],c=[1.1,1.3,1.9];return [planeQ([0,0,0],a,b,.9,s,'a'),Ar([0,0,0],a,s,'a','a',[0,16],2.4),Ar([0,0,0],b,s,'b','b',[-14,0],2.4),Ar([0,0,0],c,s,'c','c',[12,-8],3)];},
+ p3:function(){var s=.45,a=[2,0,0],b=[0,2,0],c=vadd(vmul(a,.8),vmul(b,.7));return [planeQ([0,0,0],a,b,.9,s,'a'),Ar([0,0,0],a,s,'a','a',[0,16],2.4),Ar([0,0,0],b,s,'b','b',[-14,0],2.4),dashed(A3(vmul(a,.8),s),A3(c,s),'faint'),dashed(A3(vmul(b,.7),s),A3(c,s),'faint'),Ar([0,0,0],c,s,'accent','c',[12,-8],3)];},
+ r1:function(){var s=.4,a=[2,0,0],b=[.5,1.6,0],c=[.3,.4,1.4],O=[0,0,0],d=vadd(a,vadd(b,c));return parBox(O,a,b,c,s).concat([Ar(O,a,s,'a','a',[0,16],2.4),Ar(O,b,s,'b','b',[-12,-6],2.4),Ar(O,c,s,'c','c',[-12,-4],2.4),Ar(O,d,s,'accent','d',[12,-8],3.2)]);},
+ r2:function(){var s=.34,a=RA,b=RB,c=RC,O=[0,0,0],xa=vmul(a,1.2),p2=vadd(xa,vmul(b,1.2)),d=vadd(p2,vmul(c,1.1));return [Ar(O,a,s,'a','a',[0,16],2.2),Ar(O,b,s,'b','b',[-12,-6],2.2),Ar(O,c,s,'c','c',[-12,-4],2.2),lin(O,xa,s,'a',3),lin(xa,p2,s,'b',3),lin(p2,d,s,'c',3),Ar(O,d,s,'accent','d',[12,-8],3.2)];}
+};
+function mImg(key,n){
+ var f=MIMG[key](),vw={yaw:-.5,pitch:.4},inner;
+ ARW=1.5;
+ try{inner=f.poly?polySVG(f.poly,vw):renderPrims(f,vw);}finally{ARW=1;}
+ return '<span class="mt-img"><svg viewBox="115 10 280 240" role="img" aria-label="'+(state.lang==='ru'?'Рисунок ':'Сурет ')+n+'">'+inner+'</svg></span>';
+}
+function mcell(x,n){return (x&&typeof x==='object'&&x.img)?mImg(x.img,n):esc(mtx(x));}
+
+function fitImgs(){
+ var l=document.querySelectorAll('.mt-img svg'),i,bb,p=14;
+ for(i=0;i<l.length;i++){
+  try{bb=l[i].getBBox();if(bb.width>10&&bb.height>10){var w=Math.max(bb.width+2*p,170),h=Math.max(bb.height+2*p,135);l[i].setAttribute('viewBox',(bb.x+bb.width/2-w/2)+' '+(bb.y+bb.height/2-h/2)+' '+w+' '+h);}}catch(e){}
+ }
+}
+var _matchRender=matchRender;
+matchRender=function(){_matchRender.apply(this,arguments);fitImgs();};
+var MLET=['А','Б','В','Г','Д'];
+state.solMode='solve';state.solShow=false;
+state.match={set:0,sel:null,map:{},checked:false};
+function mtx(x){return typeof x==='object'?x[state.lang]:x;}
+function mOrder(n,seed){
+ var a=[],i,x=seed*7919+13,j,t;
+ for(i=0;i<n;i++)a.push(i);
+ for(i=n-1;i>0;i--){x=(x*1103515245+12345)%2147483648;j=x%(i+1);t=a[i];a[i]=a[j];a[j]=t;}
+ if(a.every(function(v,k){return v===k;}))a.push(a.shift());
+ return a;
+}
+function matchHTML(){
+ var L=state.lang,t=SOLT[L],m=state.match,S=MATCH[m.set],n=S.p.length,ord=mOrder(n,m.set+1),i,k,h='';
+ var inv={};Object.keys(m.map).forEach(function(l){inv[m.map[l]]=+l;});
+ h+='<div class="modes" role="group" aria-label="'+esc(t.mSets)+'">'+MATCH.map(function(s,si){return '<button type="button" class="mode" data-act="mset" data-i="'+si+'" aria-pressed="'+(si===m.set)+'">'+(si+1)+'. '+esc(s.t[L])+'</button>';}).join('')+'</div>';
+ var cnt=Object.keys(m.map).length;
+ h+='<article class="card match"><div class="m-head"><h2>'+esc(S.t[L])+'</h2><span class="m-cnt">'+cnt+' / '+n+'</span></div><p class="m-help">'+t.mHelp+(S.n?' '+esc(S.n[L]):'')+'</p>';
+ h+='<div class="mt'+(S.p[0][0].img?' has-img':'')+'"><div class="mt-col" role="group" aria-label="'+esc(t.mLeft)+'">';
+ for(i=0;i<n;i++){
+  var got=m.map[i],cls='mt-c'+(S.p[i][0].img?' img':'')+(m.sel===i?' sel':'')+(got!==undefined?' got':''),mark='';
+  if(m.checked){var ok=got===i;cls+=ok?' ok':' bad';mark='<i class="mt-m" aria-hidden="true">'+(ok?'✓':'✗')+'</i>';}
+  h+='<button type="button" class="'+cls+'" data-act="mleft" data-i="'+i+'" aria-pressed="'+(m.sel===i)+'"><span class="mt-n">'+(i+1)+'</span><span class="mt-t">'+mcell(S.p[i][0],i+1)+'</span><span class="mt-b">'+(got!==undefined?MLET[ord.indexOf(got)]:'')+'</span>'+mark+'</button>';
+ }
+ h+='</div><div class="mt-col" role="group" aria-label="'+esc(t.mRight)+'">';
+ for(k=0;k<n;k++){
+  var oi=ord[k],lf=inv[oi];
+  h+='<button type="button" class="mt-c'+(S.p[oi][1].img?' img':'')+(lf!==undefined?' got':'')+'" data-act="mright" data-i="'+oi+'"><span class="mt-n">'+MLET[k]+'</span><span class="mt-t">'+mcell(S.p[oi][1],k+1)+'</span><span class="mt-b">'+(lf!==undefined?(lf+1):'')+'</span></button>';
+ }
+ h+='</div></div>';
+ var fb='';
+ if(m.checked){
+  var sc=0;for(i=0;i<n;i++)if(m.map[i]===i)sc++;
+  fb='<p class="fb" role="status"><b class="'+(sc===n?'ok':'bad')+'">'+sc+' '+T[L].of+' '+n+'.</b> '+(sc===n?t.mAll:t.mFix)+'</p>';
+ }
+ h+=fb+'<div class="m-act"><button type="button" class="btn" data-act="mcheck">'+t.mCheck+'</button><button type="button" class="btn ghost" data-act="mreset">'+t.mReset+'</button></div></article>';
+ return h;
+}
+function matchRender(){var el=$('#view');if(!el)return;var y=window.scrollY;el.innerHTML=solHTML();window.scrollTo(0,y);requestAnimationFrame(sizeInk);}
+document.addEventListener('click',function(e){
+ var el=e.target.closest&&e.target.closest('[data-act^="m"],[data-act="solmode"]');if(!el||state.tab!=='sol')return;
+ var act=el.dataset.act,m=state.match,i=+el.dataset.i,l;
+ if(act==='solmode'){state.solShow=false;state.solMode=el.dataset.v;matchRender();if(state.solMode==='solve')solRefresh();return;}
+ if(act==='mset'){m.set=i;m.sel=null;m.map={};m.checked=false;matchRender();return;}
+ if(act==='mreset'){m.sel=null;m.map={};m.checked=false;matchRender();return;}
+ if(act==='mcheck'){m.checked=true;matchRender();return;}
+ if(act==='mleft'){m.checked=false;if(m.map[i]!==undefined&&m.sel!==i){delete m.map[i];m.sel=null;}else m.sel=(m.sel===i?null:i);matchRender();return;}
+ if(act==='mright'){
+  m.checked=false;
+  for(l in m.map)if(m.map[l]===i){delete m.map[l];m.sel=null;matchRender();return;}
+  if(m.sel!==null){m.map[m.sel]=i;m.sel=null;}
+  matchRender();return;
+ }
+});
+function solAfterRender(){if(state.solMode==='match')return;solRefresh();}
+function solClearEx(){var s=state.sol;s.ex=null;$$('[data-act="solex"]').forEach(function(b){b.setAttribute('aria-pressed','false');});}
+document.addEventListener('change',function(e){
+ var el=e.target,s=state.sol;if(!s||state.tab!=='sol')return;
+ if(el.id==='sol-kind'){state.solShow=false;solKindSet(el.value);$('#solCtl').innerHTML=solControls();solRefresh();}
+ else if(el.classList.contains('sol-sel')){s.vals[el.dataset.key]=el.value;solClearEx();solRefresh();}
+});
+document.addEventListener('input',function(e){
+ var el=e.target,s=state.sol;if(!s||state.tab!=='sol'||!el.classList.contains('sol-in'))return;
+ var v=parseFloat(String(el.value).replace(',','.')),key=el.dataset.key,i=+el.dataset.i;
+ if(!isFinite(v)||((key==='p'||key==='q'||key==='r')&&!(v>0))){el.setAttribute('aria-invalid','true');return;}
+ el.removeAttribute('aria-invalid');
+ if(Array.isArray(s.vals[key]))s.vals[key][i]=v;else s.vals[key]=v;
+ solClearEx();solRefresh();
+});
+document.addEventListener('click',function(e){
+ var el=e.target.closest&&e.target.closest('[data-act="solex"]');if(!el)return;
+ var ex=SOLEX.filter(function(x){return x.id===el.dataset.id;})[0],s=state.sol;
+ state.solShow=false;s.kind=ex.kind;s.vals=JSON.parse(JSON.stringify(ex.vals));s.ex=ex.id;
+ $('#solCtl').innerHTML=solControls();solRefresh();
+});
+
+document.addEventListener('click',function(e){
+ var el=e.target.closest&&e.target.closest('[data-act="solshow"]');if(!el||state.tab!=='sol')return;
+ state.solShow=!state.solShow;
+ var o=$('#solOut');if(o)o.innerHTML=solOutHTML(state.solCache?state.solCache.out:solCompute().out);
+ var b=$('[data-act="solshow"]');if(b)b.focus({preventScroll:true});
+});
+
+/* ---------- boot ---------- */
+function fullRender(){
+ var L=state.lang,t=T[L];
+ document.documentElement.lang=L==='kk'?'kk':'ru';
+ $('#bt').textContent=t.title;$('#bs').textContent=t.sub;
+ $$('.seg button[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.lang===L));});
+ applySize();
+ renderTabs();renderTheme();loadStrokes();renderView();renderPen();
+ requestAnimationFrame(sizeInk);
+}
+fullRender();
+if(window.ResizeObserver)new ResizeObserver(function(){sizeInk();}).observe($('#view'));
+window.addEventListener('resize',sizeInk);
+})();
+</script><script>
+/* subscript fallback: Unicode ₀-₉ -> real <sub>/<tspan> (fonts of some touch panels lack these glyphs) */
+(function(){
+var RE=/[₀-₉]+/, RG=/([₀-₉]+)/g, SV='http://www.w3.org/2000/svg';
+function dig(s){return s.replace(/[₀-₉]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-0x2080+48);});}
+function inSvg(n){var p=n.parentNode;while(p&&p.nodeType===1){if(p.namespaceURI===SV)return true;p=p.parentNode;}return false;}
+function fix(t){
+ var par=t.parentNode;if(!par||!RE.test(t.nodeValue))return;
+ var tag=par.nodeName.toLowerCase();
+ if(tag==='script'||tag==='style'||tag==='textarea')return;
+ if(tag==='option'||tag==='title'){t.nodeValue=dig(t.nodeValue);return;}
+ var parts=t.nodeValue.split(RG),frag=document.createDocumentFragment(),svg=inSvg(t),i,sub;
+ for(i=0;i<parts.length;i++){
+  if(!parts[i])continue;
+  sub=(i%2===1);
+  if(svg){
+   var ts=document.createElementNS(SV,'tspan');
+   if(sub){ts.setAttribute('dy','0.28em');ts.setAttribute('font-size','72%');ts.textContent=dig(parts[i]);}
+   else{ts.textContent=parts[i];if(i>1)ts.setAttribute('dy','-0.28em');}
+   frag.appendChild(ts);
+  }else if(sub){var s=document.createElement('sub');s.className='sbx';s.textContent=dig(parts[i]);frag.appendChild(s);}
+  else frag.appendChild(document.createTextNode(parts[i]));
+ }
+ par.replaceChild(frag,t);
+}
+function walk(n){
+ if(n.nodeType===3){fix(n);return;}
+ if(n.nodeType!==1)return;
+ var w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT,null),a=[],x;
+ while((x=w.nextNode()))if(RE.test(x.nodeValue))a.push(x);
+ a.forEach(fix);
+}
+var st=document.createElement('style');st.textContent='sub.sbx{font-size:.72em;line-height:0;vertical-align:baseline;position:relative;top:.28em}';document.head.appendChild(st);
+var busy=false;
+new MutationObserver(function(ms){
+ if(busy)return;busy=true;
+ ms.forEach(function(m){
+  if(m.type==='characterData')fix(m.target);
+  else m.addedNodes.forEach(walk);
+ });
+ busy=false;
+}).observe(document.body||document.documentElement,{childList:true,subtree:true,characterData:true});
+walk(document.body||document.documentElement);
+})();
+</script>
